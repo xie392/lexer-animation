@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitThis": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "#/*": ["src/types/*"],
+      "$/*": ["src/animations/*"],
+      "lexer/*": ["src/lexer/*"],
+      "canvas/*": ["src/canvas/*"],
+      "svg/*": ["src/svg/*"]
+
+    },
+    "types": ["pinia-plugin-persist"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/canvas/hooks/useStatement.ts.bak"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

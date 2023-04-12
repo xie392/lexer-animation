@@ -1,0 +1,30 @@
+@import './base.css';
+@import './reset.css';
+
+#app {
+  width: 100%;
+  min-width: 1200px;
+  font-weight: normal;
+}
+
+.grid {
+  display: grid;
+  display: -moz-grid;
+  display: -ms-grid;
+  display: -webkit-grid;
+}
+
+.flex {
+  display: flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -webkit-flex;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+}

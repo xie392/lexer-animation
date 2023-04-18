@@ -1,3 +1,5 @@
+import Konva from 'konva'
+
 // export interface CanvaOptionsInterface {
 //   // 画布id
 //   id?: string
@@ -56,45 +58,33 @@
 // }
 
 export interface PointInterface {
-  x: number
-  y: number
+  minX: number
+  maxX: number
+  minY: number
+  maxY: number
 }
 
+// export interface KonvaInterface {
+//   rect?: Konva.Rect
+//   text?: Konva.Text
+//   circle?: Konva.Circle
+// }
+
+export type KonvaInterface = Konva.Rect | Konva.Text | Konva.Circle
+
 export interface DrawInterface {
-  canvas: HTMLCanvasElement
-  ctx: CanvasRenderingContext2D
-  options: CanvaOptionsInterface
+  // 坐标
+  point: Array<PointInterface>
 
-  point: PointInterface
+  konvaList: Array<KonvaInterface>
 
-  /**
-   * 修改画布配置
-   * @param options
-   */
-  setOptions(options: CanvaOptionsInterface): void
+  id: string
+  height?: number
+  width?: number
 
-  /**
-   * 画布公共方法
-   * @param callback
-   */
-  draw(callback: () => void): void
-
-  /**
-   * 绘画图片
-   * @param img
-   * @param x
-   * @param y
-   * @param width
-   * @param height
-   */
-  drawImage(
-    img: HTMLImageElement,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    options?: CanvaOptionsInterface
-  ): void
+  // konva 实例
+  stage: Konva.Stage
+  layer: Konva.Layer
 
   /**
    * 绘制矩形
@@ -104,7 +94,7 @@ export interface DrawInterface {
    * @param height
    * @param color
    */
-  drawRect(x: number, y: number, width: number, height: number, color: string): void
+  drawRect(width: number, height: number, options: OptionsInterface): Konva.Rect
 
   /**
    * 绘制圆形
@@ -113,7 +103,7 @@ export interface DrawInterface {
    * @param radius
    * @param color
    */
-  drawCircle(x: number, y: number, radius: number, color: string): void
+  drawCircle(x: number, y: number, radius: number, options: OptionsInterface): Konva.Circle
 
   /**
    * 绘制文本
@@ -123,23 +113,30 @@ export interface DrawInterface {
    * @param font
    * @param color
    */
-  drawText(x: number, y: number, text: string, color: string): void
+  drawText(x: number, y: number, text: string, options: OptionsInterface): Konva.Text
 
   /**
-   * 绘制线条
-   * @param x
-   * @param y
-   * @param x1
-   * @param y1
-   * @param lineWidth
-   * @param color
+   * 添加坐标
+   * @param point  坐标组
    */
-  drawLine(x: number, y: number, x1: number, y1: number, lineWidth: number, color: string): void
+  addPoint(point: PointInterface): void
 
   /**
-   * 清楚画布
+   * 自动给图形分配坐标
+   * @param callback 回调函数
+   * @returns { x:number; y:number }
    */
-  clear(): void
+  autoPoint(callback: Function): { x: number; y: number }
+
+  /**
+   * 中心坐标,确保该坐标在画布中间
+   * @param width  要绘制图形的宽度
+   * @param height 要绘制图形的高度
+   * @returns { x:number; y:number }
+   */
+  centerPoint(width: number, height: number): { x: number; y: number }
+
+  run(): void
 }
 
 export interface CanvaOptionsInterface {
@@ -156,11 +153,13 @@ export interface OptionsInterface {
   // 填充色
   fill?: string
   // 边框颜色
-  stroke?:string
+  stroke?: string
   // 边框宽度
-  strokeWidth?:number
+  strokeWidth?: number
   // 阴影
   shadowBlur?: number
   //圆角
   cornerRadius?: number | number[]
+  // 字体大小
+  fontSize?: number
 }

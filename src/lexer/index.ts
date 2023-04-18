@@ -7,7 +7,7 @@ export default class Compiler implements CompilerInterface {
   input: string
 
   constructor(language = 'C', input = '') {
-    let Languages = { C }
+    const Languages = { C }
     // @ts-ignore
     this.lang = new Languages[language]()
     this.input = input

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onUpdated, ref, watch } from 'vue'
-import { Animations } from '$/index'
-import statement from 'svg/components/statement.vue'
-// import * as d3 from 'd3'
-import Test from '@/animations/index.vue'
-import Draw from 'canvas/index'
+// import { Animations } from '$/index'
+// import statement from 'svg/components/statement.vue'
+// import Test from '@/animations/index.vue'
+import Draw from 'canvas/canvas'
 import { useStatement } from '@/canvas/hooks/useStatement'
+import { DrawInterface } from '#/canvas'
 
 const animation = ref<HTMLElement | null>(null)
 
@@ -19,19 +19,14 @@ onMounted(() => {
   // draw.drawRect(40, 180, 100, 40, '#f36')
   // draw.drawText(55, 205, 'hello world')
   // draw.drawLine(200, 200, 100, 120, 1, '#f36')
-  // useStatement(draw, { name: 'a', value: '100001' })
+  useStatement(draw, { name: 'a', value: '100001' })
 })
 </script>
 
 <template>
   <div class="grid code-animation">
     <div class="animation" ref="animation">
-      <!-- <div class="reveal layout-center" id="ppt"> -->
-      <!-- <div class="slides"> -->
-      <!-- <section data-transition="fade"></section> -->
-      <!-- </div> -->
-      <!-- </div> -->
-      <canvas id="canvas" class="canvas"></canvas>
+      <div id="canvas" class="canvas"></div>
     </div>
     <div class="terminal">k控制台</div>
   </div>

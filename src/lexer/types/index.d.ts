@@ -4,7 +4,6 @@ export interface LangInterface {
   parser(): any[]
 }
 
-
 export interface CompilerInterface {
   // 语言
   lang: LangInterface
@@ -22,28 +21,25 @@ export interface CompilerInterface {
   parser(): any
 }
 
-
 export interface TokenInterface {
-    type: string
-    value: string
-    line: number
-    column: number
-    index: number
-    length: number
-    raw: string
-    range: [number, number]
-    loc: {
-        start: {
-            line: number
-            column: number
-        }
-        end: {
-            line: number
-            column: number
-        }
+  type: string
+  value: string
+  line: number
+  column: number
+  index: number
+  length: number
+  raw: string
+  range: [number, number]
+  loc: {
+    start: {
+      line: number
+      column: number
     }
+    end: {
+      line: number
+      column: number
+    }
+  }
 }
 
-export interface AstInterface {
-
-}
+export interface AstInterface {}

@@ -1,5 +1,5 @@
 :root {
-  --bg-color:#fff;
+  --bg-color: #fff;
   --text-color: #000;
   --border-color: #eaeaea;
 }
@@ -18,7 +18,6 @@
     --color-text: var(--vt-c-text-dark-2);
   }
 } */
-
 
 body {
   min-height: 100vh;

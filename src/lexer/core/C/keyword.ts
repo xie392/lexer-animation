@@ -111,24 +111,23 @@ export const operators = new Set([
   ':'
 ])
 
-
 /**
  * 判断是否为关键字
- * @param word 
- * @returns 
+ * @param word
+ * @returns
  */
 export const isKeyword = (word: string) => keywords.has(word)
 
 /**
  * 判断是否为符号
- * @param word 
- * @returns 
+ * @param word
+ * @returns
  */
 export const isSymbol = (word: string) => symbols.has(word)
 
 /**
  * 判断是否为运算符
- * @param word 
- * @returns 
+ * @param word
+ * @returns
  */
 export const isOperator = (word: string) => operators.has(word)

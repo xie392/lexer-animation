@@ -14,7 +14,7 @@ export default class C {
   }
 
   tokenizer() {
-    let tokenizer = new Tokenizer(this.input)
+    const tokenizer = new Tokenizer(this.input)
     this.tokens = tokenizer.init()
     console.log('tokens:', this.tokens)
     return this.tokens
@@ -22,7 +22,7 @@ export default class C {
 
   parser() {
     if (this.tokens.length === 0) this.tokenizer()
-    let parser = new Parser(this.tokens)
+    const parser = new Parser(this.tokens)
     this.ast = parser.init()
     console.log('ast部分:', this.ast)
     console.log('ast完整:', JSON.stringify(this.ast, null, 2))

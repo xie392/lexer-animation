@@ -16,7 +16,7 @@ export class Parser {
   }
 
   parser() {
-    let tokens = this.value
+    const tokens = this.value
 
     // 处理头文件
     if (this.matchValue('#')) {
@@ -98,12 +98,12 @@ export class Parser {
    * @returns
    */
   declaration(flag) {
-    let declarations = []
+    const declarations = []
 
     let tokens = this.value
 
     // 声明类型 int,char,double,float...
-    let id = tokens.value
+    const id = tokens.value
 
     if (!declaration.has(id)) {
       throw new Error(`error: '${id}' is undefined ${tokens.line}:${tokens.column}`)
@@ -112,11 +112,11 @@ export class Parser {
     const walk = () => {
       tokens = this.nextToken()
 
-      let new_tokens = tokens
+      const new_tokens = tokens
 
       // 检查命名是否符合规范
       if (this.matchType('identifier')) {
-        let name = new_tokens.value
+        const name = new_tokens.value
         if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name) || keywords.has(name)) {
           throw new Error(`Invalid identifier name "${name}" ${tokens.line}:${tokens.column}`)
         }
@@ -205,8 +205,8 @@ export class Parser {
    * @returns
    */
   functionDeclaration(id, options) {
-    let body = { type: 'blockStatement', body: [] }
-    let params = []
+    const body = { type: 'blockStatement', body: [] }
+    const params = []
     let tokens = this.nextToken()
 
     // 参数
@@ -271,11 +271,11 @@ export class Parser {
 
   // return
   returnStatement() {
-    let argument = {}
+    const argument = {}
 
     let tokens = this.nextToken()
 
-    let value = tokens.value
+    const value = tokens.value
 
     tokens = this.nextToken()
 
@@ -293,7 +293,7 @@ export class Parser {
   // 循环 for
   forStatement() {
     let tokens = this.nextToken()
-    let declarations = { type: 'ForStatement', init: null, test: null, update: null, body: [] }
+    const declarations = { type: 'ForStatement', init: null, test: null, update: null, body: [] }
 
     // for(int i = 0; i < 10; i++)
     // for(int i = 0, j = 0; i < 10; i++)

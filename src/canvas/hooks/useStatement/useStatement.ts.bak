@@ -1,0 +1,129 @@
+import type { DrawInterface, PointInterface } from '#/canvas'
+import Konva from 'konva'
+
+interface OptionsInterface {
+  name: string
+  value: any
+}
+
+export const useStatement = (
+  Draw: DrawInterface,
+  options: {
+    kind: string
+    body: Array<OptionsInterface>
+  }
+) => {
+  let point: PointInterface
+
+  let minX = 0,
+    maxX = 0,
+    minY = 0,
+    maxY = 0
+
+  let bigReat: Konva.Rect,
+    bigText: Konva.Text,
+    rect: Konva.Rect,
+    textName: Konva.Text,
+    textValue: Konva.Text
+
+  let rx: number, ry: number
+  const bx: number = 20
+  let by: number = 20
+
+  const w = Draw.stage.width()
+
+  // 绘制外框矩形
+  const drawBigRect = () => {
+    const po = Draw.groupPoint[Draw.groupPoint.length - 1]
+    if (po) {
+      by = po.maxY + 20
+    }
+
+    bigReat = Draw.drawRect(bx, by, w - 40, 80, {
+      stroke: '#ccc',
+      cornerRadius: 5,
+      strokeWidth: 1
+    })
+    bigText = Draw.drawText(40, by + 25, options.kind, { fill: '#333', fontSize: 20 })
+    Draw.groupPoint.push({
+      minX: 20,
+      maxX: w - 20,
+      minY: by,
+      maxY: by + 80
+    })
+  }
+
+  // 绘制变量块
+  const drawStatement = () => {
+    const po = Draw.point[Draw.point.length - 1]
+    if (!po) {
+      rx = 120
+      ry = 30
+    } else {
+      rx = po.maxX + 10
+      ry = po.minY
+    }
+
+    // // 长度大于 1 进来
+    // if (Draw.groupPoint.length > 1) {
+    //   // 如果是另外一组
+    //   const bpo = Draw.groupPoint[Draw.groupPoint.length - 1]
+
+    //   if (bpo) {
+    //     ry = bpo.minY + 10
+    //   }
+    // }
+
+    if (rx + 100 > w) {
+      rx = 120
+      ry = po.maxY + 20
+      bigReat.height(ry + 70)
+    }
+
+    rect = Draw.drawRect(rx, ry, 100, 40, { fill: 'orange', cornerRadius: 5 })
+    minX = rect.x()
+    minY = rect.y()
+    maxX = rect.x() + rect.width()
+    maxY = rect.y() + rect.height()
+    // 添加坐标 左右的坐标
+    point = {
+      minX,
+      maxX,
+      minY,
+      maxY: maxY + 15
+    }
+    Draw.addPoint(point)
+  }
+
+  // 绘制变量名
+  const drawStatementName = (v: OptionsInterface) => {
+    // 计算坐标，使其保持在变量块下方居中
+    textName = Draw.drawText(minX + 10, maxY + 10, v.name, { fill: '#333', fontSize: 14 })
+    const width = maxX - minX
+    const setp = Math.floor((width - textName.width()) / 2)
+    textName?.offsetX(-setp + 5)
+  }
+
+  // 绘制初始值
+  const drawStatementValue = (v: OptionsInterface) => {
+    // 要求始终文字在于居中
+    textValue = Draw.drawText(minX + 10, minY + 15, v.value || 'NULL', {
+      fill: '#fff',
+      fontSize: 14
+    })
+    const width = maxX - minX
+    const setp = Math.floor((width - textValue.width()) / 2)
+    textValue?.offsetX(-setp + 8)
+    Draw.addShapeGroupList([bigReat, bigText, rect, textName, textValue])
+    Draw.layer.add(Draw.group)
+
+    console.log('Draw.point', Draw)
+  }
+
+  drawBigRect()
+  options.body.map((v) => {
+    drawStatement()
+    drawStatementName(v)
+    drawStatementValue(v)
+  })
+}

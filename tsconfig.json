@@ -19,15 +19,12 @@
     "paths": {
       "@/*": ["src/*"],
       "#/*": ["src/types/*"],
-      "$/*": ["src/animations/*"],
-      "lexer/*": ["src/lexer/*"],
-      "canvas/*": ["src/canvas/*"],
-      "svg/*": ["src/svg/*"]
+      "$/*": ["src/canvas/*"],
 
     },
     "types": ["pinia-plugin-persist"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/canvas/hooks/useStatement.ts.bak"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/canvas/hooks/useStatement.ts.bak", "src/canvas/index.ts.bak"],
   "references": [
     {
       "path": "./tsconfig.node.json"

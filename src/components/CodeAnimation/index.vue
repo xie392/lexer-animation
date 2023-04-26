@@ -1,26 +1,49 @@
 <script setup lang="ts">
-import { onMounted, onUpdated, ref, watch } from 'vue'
-// import { Animations } from '$/index'
-// import statement from 'svg/components/statement.vue'
-// import Test from '@/animations/index.vue'
-import Draw from 'canvas/canvas'
+import { onMounted, ref } from 'vue'
+import Draw from '$/index'
 import { useStatement } from '@/canvas/hooks/useStatement'
-import { DrawInterface } from '#/canvas'
+import { useExpression } from '@/canvas/hooks/useExpression'
 
 const animation = ref<HTMLElement | null>(null)
 
-onMounted(() => {
-  // const animation = new Animations({ el: '#ppt' })
-  // animation.init()
-  // animation.addSlide('www')
+const useTime = (cb: Function, time: number) => {
+  setTimeout(cb, time * 1000)
+}
+
+const createCanvas = () => {
+  if (!animation.value) return
   const draw = new Draw({ id: 'canvas' })
-  // draw.drawText(10, 50, 'hello world')
-  // draw.drawCircle(50, 120, 40, '#f36')
-  // draw.drawRect(40, 180, 100, 40, '#f36')
-  // draw.drawText(55, 205, 'hello world')
-  // draw.drawLine(200, 200, 100, 120, 1, '#f36')
-  useStatement(draw, { name: 'a', value: '100001' })
-})
+
+  useStatement(draw, {
+    kind: 'int',
+    body: [
+      {
+        name: 'a',
+        value: 11
+      },
+      {
+        name: 'b',
+        value: 1001
+      }
+    ]
+  })
+
+  // useExpression(draw, {
+  //   left: 'a',
+  //   right: 'b',
+  //   operator: '>',
+  //   result: 'false'
+  // })
+
+  // useExpression(draw, {
+  //   left: '1',
+  //   right: '2',
+  //   operator: '+',
+  //   result: '3'
+  // })
+}
+
+onMounted(createCanvas)
 </script>
 
 <template>

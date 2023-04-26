@@ -7,17 +7,26 @@ import {
 } from '#/canvas'
 import Konva from 'konva'
 
+/***
+ * 画布类
+ * @param id 画布元素id
+ * @param width 画布宽度
+ * @param height 画布高度
+ * @param stage 画布实例
+ * @param layer 画布图层
+ * @param point 画布上的点
+ * @param groupPoint 画布组上的点
+ * @param group 画布上的组
+ * @param konvaList 画布上的图形列表
+ */
 export default class Draw implements DrawInterface {
-  // 坐标
   point: Array<PointInterface> = []
-  // 把所有创建的实例添加进去
+  groupPoint: Array<PointInterface> = []
+  group: Konva.Group = new Konva.Group({ draggable: true })
   konvaList: Array<KonvaInterface> = []
-
   id: string
   height?: number
   width?: number
-
-  // konva 实例
   stage: Konva.Stage
   layer: Konva.Layer = new Konva.Layer()
 
@@ -29,12 +38,9 @@ export default class Draw implements DrawInterface {
     this.width = options.width || el.offsetWidth || 300
     this.height = options.height || el.offsetHeight || 150
     this.stage = this.init()
+    this.stage.add(this.layer)
   }
 
-  /**
-   * 初始化画布
-   * @returns Konva.Stage
-   */
   init() {
     const stage = new Konva.Stage({
       container: this.id,
@@ -44,13 +50,7 @@ export default class Draw implements DrawInterface {
     return stage
   }
 
-  /**
-   * 绘制圆形
-   * @param x
-   * @param y
-   * @param radius
-   */
-  drawCircle(x: number, y: number, radius: number, options: OptionsInterface) {
+  drawCircle(x: number, y: number, radius: number, options?: OptionsInterface) {
     const circle = new Konva.Circle({
       x,
       y,
@@ -58,21 +58,10 @@ export default class Draw implements DrawInterface {
       ...options
     })
     this.konvaList.push(circle)
-    this.layer.add(circle)
     return circle
   }
 
-  /**
-   * 绘制矩形
-   * @param x       x轴坐标
-   * @param y       y轴坐标
-   * @param width   长
-   * @param height  高
-   * @param options 可选参数
-   */
-  drawRect(width: number, height: number, options: OptionsInterface) {
-    const { x, y } = this.centerPoint(width, height)
-
+  drawRect(x: number, y: number, width: number, height: number, options?: OptionsInterface) {
     const rect = new Konva.Rect({
       x,
       y,
@@ -81,18 +70,10 @@ export default class Draw implements DrawInterface {
       ...options
     })
     this.konvaList.push(rect)
-    this.layer.add(rect)
     return rect
   }
 
-  /**
-   * 绘制文字
-   * @param x
-   * @param y
-   * @param text
-   * @param options
-   */
-  drawText(x: number, y: number, text: string, options: OptionsInterface): Konva.Text {
+  drawText(x: number, y: number, text: string, options?: OptionsInterface): Konva.Text {
     const textNode = new Konva.Text({
       x,
       y,
@@ -100,23 +81,23 @@ export default class Draw implements DrawInterface {
       ...options
     })
     this.konvaList.push(textNode)
-    this.layer.add(textNode)
+
     return textNode
   }
 
-  /**
-   * 添加坐标到坐标组
-   * @param { Array<PointInterface> } Point 坐标 [{x1,y1},{x2,y2},{x3,y3},{x4,y4}]
-   */
+  drawLine(points: Array<number>, options?: OptionsInterface) {
+    const line = new Konva.Line({
+      points,
+      ...options
+    })
+    this.konvaList.push(line)
+    return line
+  }
+
   addPoint(Point: PointInterface) {
     this.point.push(Point)
   }
 
-  /**
-   * 判断某点坐标是否在 Point 里面
-   * @param x
-   * @param y
-   */
   isPointInPath(x: number, y: number) {
     const point = this.point
     let isPointInPath = false
@@ -136,9 +117,9 @@ export default class Draw implements DrawInterface {
        *      ------------------
        *    [5,30]             [30,30]
        *
-       *  x = 10, y = 20 得出判断条件: (5 < 10 < 30) && (10 < 20 < 30) 如果满足此条件就说明该坐标在图形内
+       *  x = 10, y = 20 得出判断条件: (5 <= 10 <= 30) && (10 <= 20 <= 30) 如果满足此条件就说明该坐标在图形内
        */
-      if (minX < x && x < maxX && minY < y && y < maxY) {
+      if (minX <= x && x <= maxX && minY <= y && y <= maxY) {
         isPointInPath = true
         break
       }
@@ -148,21 +129,6 @@ export default class Draw implements DrawInterface {
     return isPointInPath
   }
 
-  autoPoint(callback: Function) {
-    // 获取上一个图形的坐标
-    const { minX, maxX, minY, maxY } = this.point[this.addPoint.length - 1]
-
-    return {
-      x: 0,
-      y: 0
-    }
-  }
-  /**
-   * 中心坐标,确保该坐标在画布中间
-   * @param width  要绘制图形的宽度
-   * @param height 要绘制图形的高度
-   * @returns { x:number; y:number }
-   */
   centerPoint(width: number, height: number) {
     const { width: stageWidth, height: stageHeight } = this.stage.attrs
 
@@ -172,11 +138,52 @@ export default class Draw implements DrawInterface {
     return { x, y }
   }
 
+  addLayer(layer: Konva.Layer) {
+    this.stage.add(layer)
+  }
+
+  addGroup(group: Konva.Group) {
+    this.layer.add(group)
+  }
+
+  addShape(shape: KonvaInterface) {
+    this.layer.add(shape)
+  }
+
+  addShapeLayer(shape: KonvaInterface) {
+    this.layer.add(shape)
+  }
+
+  addShapeLayerList(shapeList: Array<KonvaInterface>) {
+    shapeList.forEach((shape) => {
+      this.layer.add(shape)
+    })
+  }
+
+  addShapeGroup(shape: KonvaInterface) {
+    this.group.add(shape)
+  }
+
+  addShapeGroupList(shapeList: Array<KonvaInterface>) {
+    shapeList.forEach((shape) => {
+      this.group.add(shape)
+    })
+  }
+
   /**
    * 绘制所有有图形
    * @param shapes
    */
   run() {
-    this.stage.add(this.layer)
+    // this.layer.add(this.group)
+    // this.stage.add(this.layer)
+  }
+
+  /**
+   * 销毁
+   * @returns void
+   */
+  destroy() {
+    this.stage?.destroy()
   }
 }

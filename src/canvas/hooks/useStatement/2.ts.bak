@@ -1,45 +1,59 @@
+// import type { DrawInterface, PointInterface } from '#/canvas'
 import Konva from 'konva'
-import { DrawInterface, ListInterface } from '$/types/index'
+import { PointInterface, ListInterface } from '$/types/point'
 
 interface OptionsInterface {
   name: string
   value: any
 }
-
 /**
  * 绘制变量声明动画
- * @param draw   画布实例
+ * @param stage   画布实例
+ * @param point   画布上的点
  * @param options 画布上的图形列表内容
  */
 export const useStatement = (
-  draw: DrawInterface,
+  stage: Konva.Stage,
+  point: PointInterface,
   options: { kind: string; body: Array<OptionsInterface> }
 ) => {
   const { kind, body: optionsList } = options
-  const { stage, layer, time } = draw
+  const point_list = point.getGroupEnd()
+
+  const layer = new Konva.Layer()
+
+  const big_group = new Konva.Group({
+    draggable: true
+  })
 
   const min_group = new Konva.Group({
     draggable: false
   })
 
-  // 绘制一个组
-  const big_group_rect = draw.drawBigGroup()
+  // 大组 y 坐标
+  let big_y = 10
 
-  // const tween = new Konva.Tween({
-  //   node: big_group_rect,
-  //   duration: 1,
-  //   opacity: 1,
-  //   stroke: '#f36'
-  // })
+  // 如果记录有坐标, 则获取最后一个坐标的y值, 并加上10
+  if (point_list) {
+    const { y2 } = point_list.value
+    big_y = y2 + 10
+  }
 
-  // tween.play()
-
-  let { y } = big_group_rect.getPosition()
+  // 绘制大组, 每个大组独占一行
+  const big_group_rect = new Konva.Rect({
+    x: 10,
+    y: big_y,
+    width: stage.width() - 20,
+    height: 60,
+    stroke: '#ccc',
+    strokeWidth: 1,
+    cornerRadius: 4
+  })
 
   // 绘制大组变量声明
   const big_group_text = new Konva.Text({
     x: 30,
-    y: y + 21,
+    y: big_y + 20,
     text: kind,
     fontSize: 20,
     fontFamily: 'Calibri',
@@ -56,7 +70,7 @@ export const useStatement = (
       min_x = x2 + 40
       // 如果 x 坐标超出画布宽度, 则换行
       if (min_x + 100 > stage.width()) {
-        y += 60
+        big_y += 60
         min_x = 100
         big_group_rect.height(big_group_rect.height() + 60)
       }
@@ -65,11 +79,11 @@ export const useStatement = (
     // 绘制小组变量
     const min_group_text = new Konva.Text({
       x: min_x - 20,
-      y: y + 20,
+      y: big_y + 20,
       text: item.name,
       fontSize: 20,
       fontFamily: 'Calibri',
-      fill: '#f36'
+      fill: 'orange'
     })
 
     // 计算变量初始值的宽度
@@ -83,27 +97,28 @@ export const useStatement = (
     // 绘制小组, 变量声明的每个变量都是一个小组
     const min_group_rect = new Konva.Rect({
       x: min_x + min_group_text.width() - 10,
-      y: y + 10,
+      y: big_y + 10,
       width: 100,
       height: 40,
       strokeWidth: 1,
       cornerRadius: 4,
-      fill: '#f36'
+      fill: 'orange'
     })
 
     // 变量初始值
     const min_group_text_value = new Konva.Text({
       // 要求 x 坐标必须在画布内,文字居中
       x: min_group_rect.x() + (min_group_rect.width() - min_group_text_value_width) / 2,
-      y: y + 23,
+      y: big_y + 23,
       text: item.value || 'NULL',
       fontSize: 16,
       fontFamily: 'Calibri',
-      fill: '#ccc'
+      fill: '#fff'
     })
     if (min_group_text_value_width >= 100) {
       min_group_rect.width(min_group_text_value_width + 40)
     }
+
     // 添加到坐标组
     group_list.push({
       x1: min_group_rect.x(),
@@ -120,47 +135,18 @@ export const useStatement = (
   }
 
   // 绘制所有变量小块
-  optionsList.map((v, i) => {
-    ;(function (v, i) {
-      draw.setTime()
-      setTimeout(() => {
-        const { min_group_rect, min_group_text, min_group_text_value } = drawGroup(v)
-        min_group.add(min_group_rect)
-        min_group.add(min_group_text)
-        min_group.add(min_group_text_value)
-        // layer.add(min_group)
-
-        // const t1 = new Konva.Tween({
-        //   node: min_group_text,
-        //   duration: 1,
-        //   opacity: 1,
-        //   fill: 'orange'
-        // })
-
-        // const t2 = new Konva.Tween({
-        //   node: min_group_rect,
-        //   duration: 1,
-        //   opacity: 1,
-        //   fill: 'orange'
-        // })
-
-        // const t3 = new Konva.Tween({
-        //   node: min_group_text_value,
-        //   duration: 1,
-        //   opacity: 1,
-        //   fill: '#fff'
-        // })
-
-        // t1.play()
-        // t2.play()
-        // t3.play()
-      }, (i + 1) * 1000)
-    })(v, i)
+  optionsList.map((v) => {
+    const { min_group_rect, min_group_text, min_group_text_value } = drawGroup(v)
+    min_group.add(min_group_rect)
+    min_group.add(min_group_text)
+    min_group.add(min_group_text_value)
+    layer.add(min_group)
   })
 
   // 添加坐标到坐标组
-  draw.addGroupPoint({
-    kind: 'statement',
+  point.addGroup({
+    kind: kind,
+    // body: [],
     value: {
       x1: big_group_rect.x(),
       y1: big_group_rect.y(),
@@ -169,18 +155,10 @@ export const useStatement = (
     }
   })
 
-  // layer.add(big_group_text)
-  // layer.draw()
+  big_group.add(big_group_rect)
+  big_group.add(big_group_text)
+  big_group.add(min_group)
 
-  // 恢复
-  // setTimeout(() => {
-  //   tween.reverse()
-  // }, time * 1000)
-
-  return {
-    time,
-    min_group,
-    big_group_rect,
-    big_group_text
-  }
+  layer.add(big_group)
+  stage.add(layer)
 }

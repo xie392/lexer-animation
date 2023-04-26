@@ -21,10 +21,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '#': fileURLToPath(new URL('./types', import.meta.url)),
-      $: fileURLToPath(new URL('./src/animations', import.meta.url)),
-      lexer: fileURLToPath(new URL('./src/lexer', import.meta.url)),
-      canvas: fileURLToPath(new URL('./src/canvas', import.meta.url)),
-      svg: fileURLToPath(new URL('./src/svg', import.meta.url))
+      '$': fileURLToPath(new URL('./src/canvas', import.meta.url))
     }
   }
 })

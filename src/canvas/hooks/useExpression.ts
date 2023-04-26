@@ -105,9 +105,9 @@ const useExpression = (draw: DrawInterface, options: OptionsInterface) => {
   drawGroup('=', true)
   drawGroup(result)
 
-  layer.add(big_group_text)
-  layer.add(min_group)
-  layer.draw()
+  // layer.add(big_group_text)
+  // layer.add(min_group)
+  // layer.draw()
 
   // 添加坐标到坐标组
   draw.addGroupPoint({
@@ -124,6 +124,12 @@ const useExpression = (draw: DrawInterface, options: OptionsInterface) => {
   // setTimeout(() => {
   //   tween.reverse()
   // }, time * 1000)
+
+  return {
+    big_group_rect,
+    big_group_text,
+    min_group
+  }
 }
 
 export { useExpression }

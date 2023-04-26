@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import Draw from '$/index'
-import { useStatement } from '@/canvas/hooks/useStatement'
-import { useExpression } from '@/canvas/hooks/useExpression'
+// import { useStatement } from '@/canvas/hooks/useStatement'
+// import { useExpression } from '@/canvas/hooks/useExpression'
 
 const animation = ref<HTMLElement | null>(null)
-
-const useTime = (cb: Function, time: number) => {
-  setTimeout(cb, time * 1000)
-}
 
 const createCanvas = () => {
   if (!animation.value) return
   const draw = new Draw({ id: 'canvas' })
 
-  useStatement(draw, {
+  draw.addStatement({
     kind: 'int',
     body: [
       {
@@ -27,6 +23,29 @@ const createCanvas = () => {
       }
     ]
   })
+
+  draw.addExpression({
+    left: 'a',
+    right: 'b',
+    operator: '>',
+    result: 'false'
+  })
+
+  draw.render()
+
+  // useStatement(draw, {
+  //   kind: 'int',
+  //   body: [
+  //     {
+  //       name: 'a',
+  //       value: 11
+  //     },
+  //     {
+  //       name: 'b',
+  //       value: 1001
+  //     }
+  //   ]
+  // })
 
   // useExpression(draw, {
   //   left: 'a',
@@ -42,6 +61,8 @@ const createCanvas = () => {
   //   result: '3'
   // })
 }
+
+
 
 onMounted(createCanvas)
 </script>

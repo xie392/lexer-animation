@@ -3,14 +3,28 @@ import {
   DrawOptionsInterface,
   DrawInterface,
   PointListInterface,
-  ListInterface
+  QueueInterface,
+  StatementOptionsInterface,
+  ExpressionOptionsInterface,
+  AnimationGroupInterface
 } from '$/types/index'
 import { useStatement } from '$/hooks/useStatement'
+import { useExpression } from '$/hooks/useExpression'
 
-interface OptionsInterface {
-  name: string
-  value: any
-}
+const animation_group: Array<AnimationGroupInterface> = [
+  {
+    kind: 'big_group_rect',
+    value: {
+      stroke: '#f36'
+    }
+  },
+  {
+    kind: 'big_group_text',
+    value: {
+      fill: '#f36'
+    }
+  }
+]
 
 class Draw implements DrawInterface {
   id: string
@@ -20,9 +34,11 @@ class Draw implements DrawInterface {
   stage: Konva.Stage
   layer: Konva.Layer = new Konva.Layer()
   group: Konva.Group = new Konva.Group()
-  group_point: Array<PointListInterface> = []
+  group_point: Array<PointListInterface> = animation_group
 
-  time: number = 1
+  time: number = 0
+  queue: Array<{ [key: string]: QueueInterface }> = []
+  animation_group: Array<AnimationGroupInterface> = []
 
   constructor(options: DrawOptionsInterface) {
     this.id = options.id
@@ -72,9 +88,6 @@ class Draw implements DrawInterface {
       cornerRadius: 4
     })
 
-    this.group.add(group_rect)
-    // this.layer.add(this.group)
-
     return group_rect
   }
 
@@ -82,9 +95,83 @@ class Draw implements DrawInterface {
     this.time = time ? time : ++this.time
   }
 
-  addStatement(options: { kind: string; body: Array<OptionsInterface> }) {
-    useStatement(this, options)
+  addStatement(options: StatementOptionsInterface) {
+    const statement = useStatement(this, options)
+    this.queue.push(statement)
+  }
+
+  addExpression(options: ExpressionOptionsInterface) {
+    const expression = useExpression(this, options)
+    this.queue.push(expression)
+  }
+
+  render() {
+    this.queue.forEach((item) => {
+      // 取出队列中的每一项
+      for (const key in item) {
+        const time = this.time
+        ;(() => {
+          setTimeout(() => {
+            this.layer.add(item[key])
+            this.layer.add(this.group)
+            this.layer.draw()
+            const options = key === 'big_group_rect' ? { stroke: '#f36' } : { fill: 'orange' }
+            requestAnimationFrame(() => {
+              this.animation(item[key], options)
+            })
+          }, time * 1000)
+          // 每次渲染完毕后，时间 + 1
+          this.setTime()
+        })()
+      }
+    })
+  }
+
+  animation(shape: QueueInterface, options: any = {}) {
+    const t1 = new Konva.Tween({
+      node: shape,
+      duration: 1,
+      opacity: 1,
+      ...options
+    })
+    t1.play()
+
+    setTimeout(() => {
+      t1.reverse()
+    }, this.time * 1000)
+
+    return t1
+  }
+
+  destroy() {
+    this.layer?.destroy()
+    this.stage?.destroy()
   }
 }
 
 export default Draw
+
+// const t1 = new Konva.Tween({
+//   node: min_group_text,
+//   duration: 1,
+//   opacity: 1,
+//   fill: 'orange'
+// })
+
+// const t2 = new Konva.Tween({
+//   node: min_group_rect,
+//   duration: 1,
+//   opacity: 1,
+//   fill: 'orange'
+// })
+
+// const t3 = new Konva.Tween({
+//   node: min_group_text_value,
+//   duration: 1,
+//   opacity: 1,
+//   fill: '#fff'
+// })
+
+// t1.play()
+// t2.play()
+// t3.play()

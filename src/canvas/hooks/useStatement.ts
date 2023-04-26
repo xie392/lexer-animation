@@ -120,42 +120,17 @@ export const useStatement = (
   }
 
   // 绘制所有变量小块
-  optionsList.map((v, i) => {
-    ;(function (v, i) {
-      draw.setTime()
-      setTimeout(() => {
-        const { min_group_rect, min_group_text, min_group_text_value } = drawGroup(v)
-        min_group.add(min_group_rect)
-        min_group.add(min_group_text)
-        min_group.add(min_group_text_value)
-        // layer.add(min_group)
-
-        // const t1 = new Konva.Tween({
-        //   node: min_group_text,
-        //   duration: 1,
-        //   opacity: 1,
-        //   fill: 'orange'
-        // })
-
-        // const t2 = new Konva.Tween({
-        //   node: min_group_rect,
-        //   duration: 1,
-        //   opacity: 1,
-        //   fill: 'orange'
-        // })
-
-        // const t3 = new Konva.Tween({
-        //   node: min_group_text_value,
-        //   duration: 1,
-        //   opacity: 1,
-        //   fill: '#fff'
-        // })
-
-        // t1.play()
-        // t2.play()
-        // t3.play()
-      }, (i + 1) * 1000)
-    })(v, i)
+  optionsList.map((v) => {
+    // ;(function (v, i) {
+    // draw.setTime()
+    // setTimeout(() => {
+    const { min_group_rect, min_group_text, min_group_text_value } = drawGroup(v)
+    min_group.add(min_group_rect)
+    min_group.add(min_group_text)
+    min_group.add(min_group_text_value)
+    // layer.add(min_group)
+    // }, (i + 1) * 1000)
+    // })(v, i)
   })
 
   // 添加坐标到坐标组
@@ -178,9 +153,8 @@ export const useStatement = (
   // }, time * 1000)
 
   return {
-    time,
-    min_group,
     big_group_rect,
-    big_group_text
+    big_group_text,
+    min_group
   }
 }

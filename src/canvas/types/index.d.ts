@@ -42,6 +42,16 @@ export interface DrawInterface {
    */
   time: number
   /**
+   * 队列
+   * @param {Array<QueueInterface>} queue
+   */
+  queue: Array<{ [key: string]: QueueInterface }>
+  /**
+   * 动画组
+   * @param {Array<AnimationGroupInterface>} animation_group
+   */
+  animation_group: Array<AnimationGroupInterface>
+  /**
    * 画布初始化
    * @returns {Konva.Stage}
    */
@@ -66,6 +76,26 @@ export interface DrawInterface {
    * @param {number} time
    */
   setTime(time?: number): void
+  /**
+   * 变量声明
+   * @param {StatementOptionsInterface} options
+   */
+  addStatement(options: StatementOptionsInterface): void
+  /**
+   * 表达式声明
+   * @param {ExpressionOptionsInterface} options
+   */
+  addExpression(options: ExpressionOptionsInterface): void
+  /**
+   * 从队列中从头开始渲染
+   * @returns {void}
+   */
+  render(): void
+  /**
+   * 销毁
+   * @returns {void}
+   */
+  destroy(): void
 }
 
 export interface DrawOptionsInterface {
@@ -112,4 +142,31 @@ export interface PointListInterface {
    * @type {ListInterface}
    */
   value: ListInterface
+}
+
+export type QueueInterface =
+  | Konva.Text
+  | Konva.Rect
+  | Konva.Circle
+  | Konva.Group
+  | Konva.Shape
+  | Konva.Line
+  | Konva.Image
+  | Konva.Star
+
+export interface StatementOptionsInterface {
+  kind: string
+  body: Array<{ name: string; value: any }>
+}
+
+export interface ExpressionOptionsInterface {
+  left: string
+  right: string
+  operator: string
+  result: string
+}
+
+export interface AnimationGroupInterface {
+  kind: string
+  value: Konva.Group
 }

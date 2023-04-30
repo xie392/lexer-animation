@@ -24,7 +24,7 @@
     },
     "types": ["pinia-plugin-persist"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/canvas/hooks/useStatement.ts.bak", "src/canvas/index.ts.bak"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/canvas/plugin/useStatement.ts.bak", "src/canvas/index.ts.bak"],
   "references": [
     {
       "path": "./tsconfig.node.json"

@@ -52,6 +52,15 @@ export interface DrawInterface {
    */
   animation_group: Array<AnimationGroupInterface>
   /**
+   * 方法（主要用于扩展）
+   * @param {any} [key: string]: any
+   * @returns {Function | any}
+   * @example
+   * Draw.fn = function() {}
+   * Draw.fn()
+   */
+  [key: string]: any
+  /**
    * 画布初始化
    * @returns {Konva.Stage}
    */
@@ -77,12 +86,12 @@ export interface DrawInterface {
    */
   setTime(time?: number): void
   /**
-   * 变量声明
+   * 变量声明 把要渲染的图形添加到队列中
    * @param {StatementOptionsInterface} options
    */
   addStatement(options: StatementOptionsInterface): void
   /**
-   * 表达式声明
+   * 表达式声明  把要渲染的图形添加到队列中
    * @param {ExpressionOptionsInterface} options
    */
   addExpression(options: ExpressionOptionsInterface): void
@@ -91,6 +100,12 @@ export interface DrawInterface {
    * @returns {void}
    */
   render(): void
+  /**
+   * 动画
+   * @param {QueueInterface} shape 动画对象
+   * @param {any} options 动画参数
+   */
+  animation(shape: QueueInterface, options: any = {}): void
   /**
    * 销毁
    * @returns {void}
@@ -153,6 +168,19 @@ export type QueueInterface =
   | Konva.Line
   | Konva.Image
   | Konva.Star
+  | Konva.Tag
+  | Konva.TextPath
+  | Konva.Wedge
+  | Konva.Arc
+  | Konva.Ellipse
+  | Konva.RegularPolygon
+  | Konva.Path
+  | Konva.Sprite
+  | Konva.Label
+  | Konva.Arrow
+  | Konva.Ring
+  | Konva.Shape
+  | any
 
 export interface StatementOptionsInterface {
   kind: string
@@ -167,6 +195,36 @@ export interface ExpressionOptionsInterface {
 }
 
 export interface AnimationGroupInterface {
+  /**
+   * 动画 key 值
+   * @example
+   * 'Text' | 'Rect' | 'Circle' | ...
+   */
   kind: string
-  value: Konva.Group
+  /**
+   * 动画对象
+   * @example
+   * {
+   *   fill: 'red',
+   *   x: 50,
+   *   y: 50,
+   *   ...
+   * }
+   */
+  value: {
+    [key: string]: any
+  }
+}
+
+export interface RenderInterface {
+  /**
+   * 名字
+   * @param {string} name
+   */
+  name: string
+  /**
+   * 图形类别
+   * @param {QueueInterface} value
+   */
+  value: QueueInterface
 }

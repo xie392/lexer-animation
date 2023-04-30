@@ -5,6 +5,10 @@ import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons-vue'
 import * as ace from 'ace-builds'
 import { ref, computed, onUnmounted } from 'vue'
 
+// import babel from '@babel/core'
+import parser from '@babel/parser'
+// const parser = require('@babel/parser')
+
 // ase
 import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/mode-html'
@@ -62,21 +66,16 @@ const langList = [
 const fontSizeList = [12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40]
 
 const themeSelect = ref<string>('tomorrow')
-const langSelect = ref<string>('c_cpp')
+const langSelect = ref<string>('javascript')
 const fontSizeSelect = ref<number>(14)
 
 const theme = computed<string>(() => themeSelect.value)
 const lang = computed<string>(() => langSelect.value)
 
-const content = ref(`/*
- 请开始你的表演
-*/
-#include <stdio.h>
-
-int main(){
-  printf("Hello World!");
-  return 0;
-}
+const content = ref(`let a = 1
+let b = 2
+let c = a + b
+console.log(c)
 `)
 const codeEditor = ref<Ace.Editor | null>(null)
 
@@ -112,9 +111,9 @@ const changeFontSize = (val: number) => {
   codeEditor.value && codeEditor.value?.setFontSize(val)
 }
 
-const changeTheme = (val: string) => {
-  codeEditor.value && codeEditor.value?.setTheme(`ace/theme/${val}`)
-}
+// const changeTheme = (val: string) => {
+//   codeEditor.value && codeEditor.value?.setTheme(`ace/theme/${val}`)
+// }
 
 const changeLang = (val: string) => {
   codeEditor.value && codeEditor.value.session.setMode(val)
@@ -122,10 +121,14 @@ const changeLang = (val: string) => {
 
 // 运行
 const run = () => {
-  // const code = codeEditor.value.getValue()
+  const code = codeEditor.value?.getValue()
   // if (!code || runStore.isRun) return
   // // const isRun = !runStore.isRun
   // runStore.run(true)
+  console.log('codeEditor', code)
+  // 生成 ast 语法树
+  // const ast = parser.parse(code || '')
+  console.log('ast', parser)
 }
 
 onUnmounted(() => {
@@ -145,14 +148,14 @@ onUnmounted(() => {
             </a-select-option>
           </a-select>
         </div>
-        <div class="flex code-editor-header-item">
+        <!-- <div class="flex code-editor-header-item">
           <span clas="span-title">语言:</span>
           <a-select v-model:value="langSelect" @change="changeTheme">
             <a-select-option v-for="(v, i) in langList" :key="i" :value="v.value">
               {{ v.label }}
             </a-select-option>
           </a-select>
-        </div>
+        </div> -->
         <div class="flex code-editor-header-item">
           <span clas="span-title">主题:</span>
           <a-select v-model:value="themeSelect" @change="changeLang">
@@ -171,12 +174,12 @@ onUnmounted(() => {
           运行
           <!-- {{ runStore.isRun ? '暂停' : '运行' }} -->
         </a-button>
-        <a-button type="danger">
+        <!-- <a-button type="danger">
           <template #icon>
             <caret-right-outlined />
           </template>
           调试
-        </a-button>
+        </a-button> -->
       </div>
     </div>
     <div class="code-editor-body">

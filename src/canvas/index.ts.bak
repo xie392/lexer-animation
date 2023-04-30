@@ -30,10 +30,10 @@ class Draw implements DrawInterface {
 
   isIf: boolean = false
 
-  pluginList: any[] = []
+  // pluginList: Array<PluginInterface> = []
   fnList: Array<Function> = []
 
-  constructor(options: DrawOptionsInterface, pluginList: any[] = []) {
+  constructor(options: DrawOptionsInterface) {
     this.id = options.id
     if (!this.id) throw new Error('id 找不到')
     const el = document.getElementById(options.id)
@@ -43,10 +43,10 @@ class Draw implements DrawInterface {
     this.stage = this.init()
     this.stage.add(this.layer)
 
-    // 添加插件
-    pluginList.forEach((plugin) => {
-      this.pluginList.push(plugin)
-    })
+    // // 添加插件
+    // pluginList.forEach((plugin) => {
+    //   this.pluginList.push(plugin)
+    // })
   }
 
   init() {

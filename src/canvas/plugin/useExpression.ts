@@ -1,35 +1,20 @@
 import Konva from 'konva'
-import { DrawInterface, ListInterface } from '$/types/index'
-
-interface OptionsInterface {
-  left: string
-  right: string
-  operator: string
-  result: string
-}
+import { DrawInterface, ListInterface,ExpressionOptionsInterface } from '$/types/index'
 
 /**
  * 声明表达式
  * @param draw  画布实例
  * @param options   画布上的图形列表内容
  */
-const useExpression = (draw: DrawInterface, options: OptionsInterface) => {
+const useExpression = (draw: DrawInterface, options: ExpressionOptionsInterface) => {
   const { left, right, operator, result } = options
-  const { stage, layer, time } = draw
+  const { stage } = draw
 
   const min_group = new Konva.Group({
     draggable: false
   })
 
   const big_group_rect = draw.drawBigGroup()
-
-  // const tween = new Konva.Tween({
-  //   node: big_group_rect,
-  //   duration: 1,
-  //   opacity: 1,
-  //   stroke: '#f36'
-  // })
-  // setTimeout(() => tween.play(), time * 1000)
 
   let { y } = big_group_rect.getPosition()
 
@@ -45,6 +30,7 @@ const useExpression = (draw: DrawInterface, options: OptionsInterface) => {
 
   const group_list: Array<ListInterface> = []
 
+  // 绘制主要内容
   const drawGroup = (item: string, flag: boolean = false) => {
     const point = group_list[group_list.length - 1]
 
@@ -102,12 +88,8 @@ const useExpression = (draw: DrawInterface, options: OptionsInterface) => {
   drawGroup(left)
   drawGroup(operator, true)
   drawGroup(right)
-  drawGroup('=', true)
+  drawGroup('=>', true)
   drawGroup(result)
-
-  // layer.add(big_group_text)
-  // layer.add(min_group)
-  // layer.draw()
 
   // 添加坐标到坐标组
   draw.addGroupPoint({
@@ -120,16 +102,14 @@ const useExpression = (draw: DrawInterface, options: OptionsInterface) => {
     }
   })
 
-  // 恢复
-  // setTimeout(() => {
-  //   tween.reverse()
-  // }, time * 1000)
-
-  return {
-    big_group_rect,
-    big_group_text,
-    min_group
-  }
+  return [
+    { name: 'Rect', value: big_group_rect },
+    { name: 'Text', value: big_group_text },
+    // @ts-ignore
+    ...min_group.children.map((v) => {
+      return { name: v?.className || '', value: v }
+    })
+  ]
 }
 
 export { useExpression }

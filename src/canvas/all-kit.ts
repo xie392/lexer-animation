@@ -1,5 +1,6 @@
+import { GroupKitInterface } from '$/types/plugin'
+
 import Statement from '$/plugin/statement'
+import Expression from '$/plugin/expression'
 
-import Plugin, { PluginInterface } from '$/plugin'
-
-export const PluginList = [Statement]
+export const pluginList: GroupKitInterface[] = [Statement, Expression]

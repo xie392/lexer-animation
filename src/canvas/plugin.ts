@@ -1,11 +1,11 @@
 import { DrawInterface, RenderInterface } from '$/types/index'
 
-export interface PluginInterface {
-  draw: DrawInterface
-  params: any
-  getName: () => string
-  render: () => Array<RenderInterface>
-}
+// export interface PluginInterface {
+//   draw: DrawInterface
+//   params: any
+//   getName: () => string
+//   render(): Array<RenderInterface>
+// }
 
 /**
  * 插件必须继承的抽象类
@@ -28,7 +28,7 @@ export interface PluginInterface {
  *  }
  * }
  */
-abstract class Plugin implements PluginInterface {
+abstract class Plugin {
   /**
    * 画布实例
    * @abstract
@@ -43,10 +43,10 @@ abstract class Plugin implements PluginInterface {
   abstract params: any
   /**
    * 插件名称
-   * @abstract
-   * @returns {string}
    */
-  abstract getName(): string
+  static getName() {
+    return ''
+  }
   /**
    * 注册插件 会在画布初始化的时候调用
    * @param draw  画布实例

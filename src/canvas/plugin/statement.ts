@@ -1,6 +1,6 @@
 import { StatementOptionsInterface, DrawInterface, ListInterface } from '$/types'
 import Konva from 'konva'
-import Plugin from '$/plugin'
+import { Plugin } from '$/index'
 
 class Statement extends Plugin {
   /**
@@ -36,6 +36,10 @@ class Statement extends Plugin {
    * 最小组
    */
   min_group: Konva.Group = new Konva.Group()
+  /**
+   * 整体组
+   */
+  big_group: Konva.Group = new Konva.Group()
 
   constructor(draw: DrawInterface, params: StatementOptionsInterface) {
     super()
@@ -51,7 +55,7 @@ class Statement extends Plugin {
 
     // 绘制大组变量声明
     this.big_group_text = new Konva.Text({
-      x: 30,
+      x: this.big_group_rect.x() + 30,
       y: y + 21,
       text: params.kind,
       fontSize: 20,
@@ -60,7 +64,7 @@ class Statement extends Plugin {
     })
   }
 
-  getName() {
+  static getName() {
     return 'Statement'
   }
 
@@ -71,14 +75,13 @@ class Statement extends Plugin {
    * @returns
    */
   drawGroup(item: { name: string; value: any }) {
-    const group_list = this.group_list
-    if (group_list.length > 0) {
-      const { x2 } = group_list[group_list.length - 1]
+    if (this.group_list.length > 0) {
+      const { x2 } = this.group_list[this.group_list.length - 1]
       this.min_x = x2 + 40
       // 如果 x 坐标超出画布宽度, 则换行
       if (this.min_x + 100 > this.draw.stage.width()) {
         this.y += 60
-        this.min_x = 100
+        this.min_x = this.big_group_rect.x() + 50
         this.big_group_rect?.height(this.big_group_rect.height() + 60)
       }
     }
@@ -95,7 +98,7 @@ class Statement extends Plugin {
 
     // 计算变量初始值的宽度
     const min_group_text_value_width = new Konva.Text({
-      text: item.value || 'NULL',
+      text: !item.value && item.value !== 0 ? 'NULL' : item.value,
       fontSize: 16,
       fontFamily: 'Calibri',
       fill: 'transparent'
@@ -117,7 +120,7 @@ class Statement extends Plugin {
       // 要求 x 坐标必须在画布内,文字居中
       x: min_group_rect.x() + (min_group_rect.width() - min_group_text_value_width) / 2,
       y: this.y + 23,
-      text: item.value || 'NULL',
+      text: !item.value && item.value !== 0 ? 'NULL' : item.value,
       fontSize: 16,
       fontFamily: 'Calibri',
       fill: '#fff'
@@ -126,14 +129,12 @@ class Statement extends Plugin {
       min_group_rect.width(min_group_text_value_width + 40)
     }
     // 添加到坐标组
-    group_list.push({
+    this.group_list.push({
       x1: min_group_rect.x(),
       y1: min_group_rect.y(),
       x2: min_group_rect.x() + min_group_rect.width(),
       y2: min_group_rect.y() + min_group_rect.height()
     })
-
-    this.group_list = group_list
 
     return {
       min_group_rect,
@@ -143,6 +144,7 @@ class Statement extends Plugin {
   }
 
   render() {
+    this.min_x = this.big_group_rect.x() + this.big_group_text.width() + 80
     // 绘制所有变量小块
     this.params.body.map((v) => {
       const { min_group_rect, min_group_text, min_group_text_value } = this.drawGroup(v)
@@ -166,7 +168,7 @@ class Statement extends Plugin {
       { name: 'Rect', value: this.big_group_rect },
       { name: 'Text', value: this.big_group_text },
       // @ts-ignore
-      ...min_group.children.map((v) => {
+      ...this.min_group.children.map((v) => {
         return { name: v?.className || '', value: v }
       })
     ]

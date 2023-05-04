@@ -4,77 +4,35 @@ import type { Ace } from 'ace-builds'
 import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons-vue'
 import * as ace from 'ace-builds'
 import { ref, computed, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import './index'
+import { themeList, langList, fontSizeList } from './index'
+import * as acorn from 'acorn'
+import { useRunStore } from '@/stores/run'
 
-// import babel from '@babel/core'
-import parser from '@babel/parser'
-// const parser = require('@babel/parser')
+const runStore = useRunStore()
 
-// ase
-import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/mode-html'
-import 'ace-builds/src-noconflict/mode-css'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/mode-markdown'
-import 'ace-builds/src-noconflict/mode-scss'
-import 'ace-builds/src-noconflict/mode-typescript'
-import 'ace-builds/src-noconflict/mode-c_cpp'
-
-// theme
-import 'ace-builds/src-noconflict/theme-github'
-import 'ace-builds/src-noconflict/theme-monokai'
-import 'ace-builds/src-noconflict/theme-tomorrow'
-import 'ace-builds/src-noconflict/theme-xcode'
-import 'ace-builds/src-noconflict/theme-kuroir'
-import 'ace-builds/src-noconflict/theme-twilight'
-import 'ace-builds/src-noconflict/theme-textmate'
-import 'ace-builds/src-noconflict/theme-solarized_dark'
-import 'ace-builds/src-noconflict/theme-solarized_light'
-import 'ace-builds/src-noconflict/theme-terminal'
-import 'ace-builds/src-noconflict/theme-merbivore_soft'
-
-import 'ace-builds/src-noconflict/ext-language_tools'
-import 'ace-builds/src-noconflict/ext-searchbox'
+const { is_run, code: run_code } = storeToRefs(runStore)
 
 // 配置路径
 ace.config.set('basePath', '/node_modules/ace-builds/src-noconflict/')
 
-const themeList = [
-  { label: 'github', value: 'github' },
-  { label: 'monokai', value: 'monokai' },
-  { label: 'tomorrow', value: 'tomorrow' },
-  { label: 'xcode', value: 'xcode' },
-  { label: 'kuroir', value: 'kuroir' },
-  { label: 'twilight', value: 'twilight' },
-  { label: 'textmate', value: 'textmate' },
-  { label: 'solarized_dark', value: 'solarized_dark' },
-  { label: 'solarized_light', value: 'solarized_light' },
-  { label: 'terminal', value: 'terminal' },
-  { label: 'merbivore_soft', value: 'merbivore_soft' }
-]
-
-const langList = [
-  { label: 'javascript', value: 'javascript' },
-  { label: 'html', value: 'html' },
-  { label: 'css', value: 'css' },
-  { label: 'json', value: 'json' },
-  { label: 'markdown', value: 'markdown' },
-  { label: 'scss', value: 'scss' },
-  { label: 'typescript', value: 'typescript' },
-  { label: 'c/cpp', value: 'c_cpp' }
-]
-
-const fontSizeList = [12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40]
-
+// 主题
 const themeSelect = ref<string>('tomorrow')
+// 语言
 const langSelect = ref<string>('javascript')
+// 字体大小
 const fontSizeSelect = ref<number>(14)
 
 const theme = computed<string>(() => themeSelect.value)
 const lang = computed<string>(() => langSelect.value)
 
-const content = ref(`let a = 1
-let b = 2
-let c = a + b
+const content = ref(`let a = 1, b = 2, c = 0
+if(a < b) {
+  a + b
+} else {
+  a - b
+}
 console.log(c)
 `)
 const codeEditor = ref<Ace.Editor | null>(null)
@@ -121,14 +79,11 @@ const changeLang = (val: string) => {
 
 // 运行
 const run = () => {
-  const code = codeEditor.value?.getValue()
-  // if (!code || runStore.isRun) return
-  // // const isRun = !runStore.isRun
-  // runStore.run(true)
-  console.log('codeEditor', code)
-  // 生成 ast 语法树
-  // const ast = parser.parse(code || '')
-  console.log('ast', parser)
+  const code = codeEditor.value?.getValue() || ''
+  // runStore.is_run = true
+  run_code.value = code
+  is_run.value = !is_run.value
+  console.log('runStore.is_run', runStore.is_run)
 }
 
 onUnmounted(() => {

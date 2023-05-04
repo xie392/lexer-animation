@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import Draw from '$/index'
+import Draw, { pluginList } from '$/index'
+// import { pluginList } from '$/all-kit'
 const animation = ref<HTMLElement | null>(null)
 
 const createCanvas = () => {
-  if (!animation.value) return
-  const draw = new Draw({ id: 'canvas' })
-
-  draw.addStatement({
+  // if (!animation.value) return
+  const draw = new Draw({ id: 'canvas' }, pluginList)
+  draw.insert('Statement', {
     kind: 'int',
     body: [
       {
@@ -20,15 +20,24 @@ const createCanvas = () => {
       }
     ]
   })
-
-  draw.addExpression({
+  draw.blockStart()
+  draw.blockAddText(`if (a < b) {`)
+  draw.blockAddText(`   a = b`)
+  draw.blockAddText(`}`)
+  draw.insert('Expression', {
     left: 'a',
     right: 'b',
-    operator: '>',
-    result: 'false'
+    operator: '<',
+    result: 'true'
   })
-
-  draw.render()
+  draw.insert('Expression', {
+    left: 'a',
+    right: 'b',
+    operator: '=',
+    result: 'a = 1012'
+  })
+  draw.blockEnd()
+  draw.render(100)
 }
 
 onMounted(createCanvas)
@@ -56,9 +65,18 @@ onMounted(createCanvas)
     border-bottom: 1px solid var(--border-color, #e8e8e8);
 
     &::-webkit-scrollbar {
-      display: none;
+      display: none !important;
+    }
+
+    #canvas {
+      width: 100%;
+      height: 100%;
+      &::-webkit-scrollbar {
+        display: none !important;
+      }
     }
   }
+
   .terminal {
     flex: 1;
     background-color: #fff;

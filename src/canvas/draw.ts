@@ -134,7 +134,7 @@ class Draw implements DrawInterface {
 
   blockAddText(text: string) {
     const group_list = this.block_group.children || []
-    console.log('group_list', this.block_Rect.y())
+    // console.log('group_list', this.block_Rect.y())
 
     let y = this.block_Rect.y() + 30
     if (group_list.length > 0) {
@@ -158,7 +158,7 @@ class Draw implements DrawInterface {
       align: 'center'
     })
     this.block_group.add(Text)
-    console.log(this.block_group.children?.[0])
+    // console.log(this.block_group.children?.[0])
     this.queue.push([{ name: 'text', value: Text }])
   }
 

@@ -1,61 +1,17 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import * as acorn from 'acorn'
-// import * as walk from 'acorn-walk'
-import Draw, { pluginList } from '$/index'
+import * as walk from 'acorn-walk'
+import Draw, { pluginList, Lexer } from '$/index'
+// import * as tokenizer from '@babel/tokenizer'
 import * as parser from '@babel/parser'
-// import * as types from '@babel/types'
 import traverse from '@babel/traverse'
-import * as t from '@babel/types'
-
-type Node = t.Node
 
 interface AstNode {
   type: string
   value?: any
   [key: string]: any
 }
-
-// const createCanvas = () => {
-//   const draw = new Draw({ id: 'canvas' }, pluginList)
-//   draw.insert('Statement', {
-//     kind: 'int',
-//     body: [
-//       {
-//         name: 'a',
-//         value: 11
-//       },
-//       {
-//         name: 'b',
-//         value: 1001
-//       }
-//     ]
-//   })
-
-//   draw.blockStart()
-
-//   draw.blockAddText(`if (a < b) {`)
-//   draw.blockAddText(`   a = b`)
-//   draw.blockAddText(`}`)
-
-//   draw.insert('Expression', {
-//     left: 'a',
-//     right: 'b',
-//     operator: '<',
-//     result: 'true'
-//   })
-
-//   draw.insert('Expression', {
-//     left: 'a',
-//     right: 'b',
-//     operator: '=',
-//     result: 'a = 1012'
-//   })
-
-//   draw.blockEnd()
-
-//   draw.render(10)
-// }
 
 export const useRunStore = defineStore(
   'run',
@@ -69,59 +25,90 @@ export const useRunStore = defineStore(
     // 监听是否运行
     watch(is_run, () => {
       // 解析代码
-      const tokens_list = acorn.tokenizer(code.value, { ecmaVersion: 2020 })
-
-      const list = []
-
-      for (const token of tokens_list) {
-        list.push(token)
-      }
-
-      const ast_list = parser.parse(code.value)
-
-      tokens.value = list
-      ast.value = ast_list
-
-      const draw = new Draw({ id: 'canvas' }, pluginList)
-
-      traverse(ast_list, {
-        VariableDeclaration(path) {
-          // console.log('VariableDeclaration', path.node)
-          draw.insert('Statement', {
-            kind: path.node.kind,
-            body: path.node.declarations.map((item: any) => {
-              return {
-                name: item.id.name,
-                value: item.init.value
-              }
-            })
-          })
-        },
-        ExpressionStatement(path) {
-          console.log('ExpressionStatement', path.node.expression)
-          // 递归遍历
-          const recursion = (node: Node) => {
-            // left
-          }
-        },
-        IfStatement(path) {
-          console.log('IfStatement', path.node.test)
-        },
-        BinaryExpression(path) {
-          console.log('BinaryExpression', path)
-          // draw.insert('Expression', {
-          //   left: path.node.left.name,
-          //   right: path.node.right.name,
-          //   operator: path.node.operator,
-          //   result: path.node.left.name + path.node.operator + path.node.right.name
-          // })
-        },
-        CallExpression(path) {
-          console.log('CallExpression', path.node)
-        }
-      })
-
-      draw.render(100)
+      // const tokens_list = acorn.tokenizer(code.value, { ecmaVersion: 2020 })
+      // const list = []
+      // for (const token of tokens_list) {
+      //   list.push(token)
+      // }
+      // const ast_list = parser.parse(code.value)
+      // tokens.value = list
+      // ast.value = ast_list
+      // const draw = new Draw({ id: 'canvas' }, pluginList)
+      const lexer = new Lexer(code.value)
+      const tokens = lexer.tokenizer()
+      const ast = lexer.parser()
+      // console.log('tokens', tokens)
+      // console.log('ast', ast)
+      lexer.traverse()
+      // traverse(ast_list, {
+      //   // 变量声明
+      //   VariableDeclaration(path) {
+      //     console.log('VariableDeclaration', path)
+      //     const declaration = path.node.declarations.map((item: any) => {
+      //       return {
+      //         name: item.id.name as string,
+      //         value: item.init.value as any
+      //       }
+      //     })
+      //     // 添加变量
+      //     // declaration.map((v) => {
+      //     //   lexer.setDeclaration({
+      //     //     name: v.name,
+      //     //     value: v.value,
+      //     //     type: typeof v.value,
+      //     //     scope: 'global',
+      //     //     const: path.node.kind === 'const' ? true : false
+      //     //   })
+      //     // })
+      //     // draw.insert('Statement', {
+      //     //   kind: path.node.kind,
+      //     //   body: path.node.declarations.map((item: any) => {
+      //     //     return {
+      //     //       name: item.id.name,
+      //     //       value: item.init.value
+      //     //     }
+      //     //   })
+      //     // })
+      //   },
+      //   // if 语句
+      //   IfStatement(path) {
+      //     // console.log('IfStatement', path.node.test)
+      //   },
+      //   // 表达式
+      //   ExpressionStatement(path) {},
+      //   // 赋值表达式
+      //   AssignmentExpression(path) {
+      //     // console.log('AssignmentExpression', path.node)
+      //   },
+      //   // 函数声明
+      //   FunctionDeclaration(path) {
+      //     // console.log('FunctionDeclaration', path.node)
+      //     // lexer.setFunction({
+      //     //   name: path.node?.id?.name as string,
+      //     //   params: path.node.params.map((item: any) => {
+      //     //     return {
+      //     //       name: item.name
+      //     //     }
+      //     //   }),
+      //     //   loc: {
+      //     //     start: path.node?.loc?.start?.line as number,
+      //     //     end: path.node?.loc?.end?.line as number
+      //     //   }
+      //     // body: path.node.body.body.map((item: any) => {
+      //     //   return {
+      //     //     name: item.name as string,
+      //     //     value: item.value
+      //     //   }
+      //     // })
+      //     // })
+      //   },
+      //   // 箭头函数
+      //   ArrowFunctionExpression(path) {
+      //     console.log('ArrowFunctionExpression', path.node)
+      //   }
+      // })
+      // console.log(lexer.declarations)
+      // draw.render(100)
     })
 
     return { is_run, code, tokens, ast }

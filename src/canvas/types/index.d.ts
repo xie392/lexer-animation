@@ -1,6 +1,10 @@
 import Konva from 'konva'
 import { GroupKitInterface } from '$/types/plugin'
 
+/**
+ * 画布配置
+ * @export DrawOptionsInterface
+ */
 export interface DrawInterface {
   /**
    * 画布 id

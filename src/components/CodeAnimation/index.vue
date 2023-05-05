@@ -1,7 +1,27 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watchEffect, watch } from 'vue'
 import Draw, { pluginList } from '$/index'
-// import { pluginList } from '$/all-kit'
+import { useRunStore } from '@/stores/run'
+import { storeToRefs } from 'pinia'
+
+const runStore = useRunStore()
+
+const { error } = storeToRefs(runStore)
+
+// watchEffect(() => {
+//   console.log('error', error.value)
+// })
+
+watch(
+  error,
+  (val) => {
+    console.log('error', val)
+  },
+  {
+    deep: true
+  }
+)
+
 const animation = ref<HTMLElement | null>(null)
 
 const createCanvas = () => {
@@ -48,7 +68,9 @@ onMounted(createCanvas)
     <div class="animation" ref="animation">
       <div id="canvas" class="canvas"></div>
     </div>
-    <div class="terminal">k控制台</div>
+    <div class="terminal">
+      <span class="error">{{ error }}</span>
+    </div>
   </div>
 </template>
 
@@ -80,6 +102,12 @@ onMounted(createCanvas)
   .terminal {
     flex: 1;
     background-color: #fff;
+    padding: 10px 5px;
+    box-sizing: border-box;
+
+    .error {
+      color: red;
+    }
   }
 }
 

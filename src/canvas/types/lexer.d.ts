@@ -1,6 +1,7 @@
 import * as acorn from 'acorn'
 import * as parser from '@babel/parser'
-import traverse from '@babel/traverse'
+// import traverse from '@babel/traverse'
+import { StatementOptionsInterface, ExpressionOptionsInterface } from '$/types'
 
 /**
  * 伪编译器接口
@@ -33,6 +34,11 @@ export class LexerInterface {
    */
   ast: parser.ParseResult<any>
   /**
+   * 队列
+   * @type {any[]}
+   */
+  queue: QueueInterface[]
+  /**
    * 进栈
    * @param {StackInterface} declaration 变量声明
    * @returns {void}
@@ -64,6 +70,11 @@ export class LexerInterface {
    * @returns {void}
    */
   traverse(): void
+  /**
+   * 添加到队列
+   * @param {QueueInterface} declaration
+   */
+  queue_push(declaration: QueueInterface): void
 }
 
 /**
@@ -129,30 +140,35 @@ export interface StackInterface {
    */
   const: boolean
   /**
-   * 位置
-   * @type {{
-   *   start: number
-   *  end: number
-   * }}
-   * @memberof HeapVariableInterface
+   * 声明类型
+   * @type {string} var 变量 let 常量 const 不可修改 ...
    */
-  loc: {
-    /**
-     * 开始位置
-     * @type {number}
-     * @memberof FunctionDeclarationInterface
-     * @default 0
-     */
-    start: number
-    /**
-     * 结束位置
-     * @type {number}
-     * @memberof FunctionDeclarationInterface
-     * @default 0
-     * @description 如果没有结束位置，那么就是 0
-     */
-    end: number
-  }
+  kind: string
+  // /**
+  //  * 位置
+  //  * @type {{
+  //  *   start: number
+  //  *  end: number
+  //  * }}
+  //  * @memberof HeapVariableInterface
+  //  */
+  // loc: {
+  //   /**
+  //    * 开始位置
+  //    * @type {number}
+  //    * @memberof FunctionDeclarationInterface
+  //    * @default 0
+  //    */
+  //   start: number
+  //   /**
+  //    * 结束位置
+  //    * @type {number}
+  //    * @memberof FunctionDeclarationInterface
+  //    * @default 0
+  //    * @description 如果没有结束位置，那么就是 0
+  //    */
+  //   end: number
+  // }
 }
 
 /**
@@ -223,4 +239,23 @@ export interface HeapInterface {
      */
     end: number
   }
+}
+
+/**
+ * 队列
+ * @export QueueInterface
+ */
+export interface QueueInterface {
+  /**
+   * 队列名
+   * @type {string}
+   * @default ''
+   */
+  name: 'statement' | 'expression'
+  /**
+   * 队列参数
+   * @type {StatementOptionsInterface | ExpressionOptionsInterface}
+   * @default []
+   */
+  params: StatementOptionsInterface | ExpressionOptionsInterface
 }

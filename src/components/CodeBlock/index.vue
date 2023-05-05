@@ -12,7 +12,7 @@ import { useRunStore } from '@/stores/run'
 
 const runStore = useRunStore()
 
-const { is_run, code: run_code } = storeToRefs(runStore)
+const { is_run, code: run_code, error } = storeToRefs(runStore)
 
 // 配置路径
 ace.config.set('basePath', '/node_modules/ace-builds/src-noconflict/')
@@ -82,8 +82,7 @@ const run = () => {
   const code = codeEditor.value?.getValue() || ''
   // runStore.is_run = true
   run_code.value = code
-  is_run.value = !is_run.value
-  console.log('runStore.is_run', runStore.is_run)
+  runStore.run()
 }
 
 onUnmounted(() => {

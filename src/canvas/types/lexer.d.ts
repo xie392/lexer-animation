@@ -39,6 +39,11 @@ export class LexerInterface {
    */
   queue: QueueInterface[]
   /**
+   * 需要跳过暂时不解析的节点
+   * @type {LocationInterface[]}
+   */
+  skip: LocationInterface[]
+  /**
    * 进栈
    * @param {StackInterface} declaration 变量声明
    * @returns {void}
@@ -144,31 +149,6 @@ export interface StackInterface {
    * @type {string} var 变量 let 常量 const 不可修改 ...
    */
   kind: string
-  // /**
-  //  * 位置
-  //  * @type {{
-  //  *   start: number
-  //  *  end: number
-  //  * }}
-  //  * @memberof HeapVariableInterface
-  //  */
-  // loc: {
-  //   /**
-  //    * 开始位置
-  //    * @type {number}
-  //    * @memberof FunctionDeclarationInterface
-  //    * @default 0
-  //    */
-  //   start: number
-  //   /**
-  //    * 结束位置
-  //    * @type {number}
-  //    * @memberof FunctionDeclarationInterface
-  //    * @default 0
-  //    * @description 如果没有结束位置，那么就是 0
-  //    */
-  //   end: number
-  // }
 }
 
 /**
@@ -217,28 +197,10 @@ export interface HeapInterface {
   body: Array<VariableDeclarationInterface | HeapInterface>
   /**
    * 位置
-   * @type {{
-   *   start: number
-   *  end: number
-   * }}
+   * @type {LocationInterface}
    * @default { start: 0, end: 0 }
-   * @description 如果没有位置，那么就是 { start: 0, end: 0 }
    */
-  loc: {
-    /**
-     * 开始位置
-     * @type {number}
-     * @default 0
-     */
-    start: number
-    /**
-     * 结束位置
-     * @type {number}
-     * @default 0
-     * @description 如果没有结束位置，那么就是 0
-     */
-    end: number
-  }
+  loc: LocationInterface
 }
 
 /**
@@ -258,4 +220,23 @@ export interface QueueInterface {
    * @default []
    */
   params: StatementOptionsInterface | ExpressionOptionsInterface
+}
+
+/**
+ * 位置接口
+ * @export LocationInterface
+ */
+export interface LocationInterface {
+  /**
+   * 开始位置
+   * @type {number}
+   * @default 0
+   */
+  start: number
+  /**
+   * 结束位置
+   * @type {number}
+   * @default 0
+   */
+  end: number
 }

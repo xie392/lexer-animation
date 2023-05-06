@@ -1,4 +1,10 @@
-import { LexerInterface, StackInterface, HeapInterface, QueueInterface } from '$/types/lexer'
+import {
+  LexerInterface,
+  StackInterface,
+  HeapInterface,
+  QueueInterface,
+  LocationInterface
+} from '$/types/lexer'
 import * as acorn from 'acorn'
 import * as parser from '@babel/parser'
 import traverse from '@babel/traverse'
@@ -20,6 +26,8 @@ class Lexer implements LexerInterface {
   ast: parser.ParseResult<any> = {}
 
   queue: QueueInterface[] = []
+
+  skip: LocationInterface[] = []
 
   constructor(code: string = '') {
     this.code = code
@@ -126,10 +134,6 @@ class Lexer implements LexerInterface {
       // 判断作用域
       const scope = scope_type.includes(path.scope?.block?.type) ? 'global' : 'local'
       const constant = node?.kind === 'const'
-      // const locList = {
-      //   start: loc?.start?.line || 0,
-      //   end: loc?.end?.line || 0
-      // }
 
       // 进栈
       this.stack_push({ name, value, type, kind, scope, const: constant })
@@ -164,7 +168,7 @@ class Lexer implements LexerInterface {
     if (!expression_type.includes(path.node.expression.type)) return
 
     // 赋值表达式
-    // TODO: 目前只处理简单赋值,后续需要处理多重赋值 
+    // TODO: 目前只处理简单赋值,后续需要处理多重赋值
     if (path.node.expression.type === 'AssignmentExpression') {
       const { left, right } = path.node.expression
       // @ts-ignore 判断是否在栈中
@@ -172,8 +176,6 @@ class Lexer implements LexerInterface {
 
       // 找不到变量有两种情况，一种是全局变量，一种是未定义
       if (!stack) {
-        console.log('path.scope?.block?.type ', path.scope?.block?.type)
-
         // 全局变量
         if (path.scope?.block?.type === 'Program') {
           this.stack_push({
@@ -215,8 +217,83 @@ class Lexer implements LexerInterface {
    * @returns {void}
    */
   handleIfStatement(path: NodePath<IfStatement>) {
-    console.log('handleIfStatement', path.node)
-    const { test, consequent, alternate } = path.node
+    const { test } = path.node
+
+    console.log('test', test)
+
+    // @ts-ignore
+    const left_name = test?.left?.name || ''
+    // @ts-ignore
+    const right_name = test?.right?.name || ''
+
+    /**
+     * 如果是变量，需要判断变量是否在栈中
+     * @param name  变量名
+     */
+    const handleStack = (name: string, type: string) => {
+      let stack = null
+
+      if (type === 'Identifier') {
+        // @ts-ignore 判断是否在栈中
+        stack = this.stack.find((item) => item.name === name)
+
+        // 找不到变量有两种情况，一种是全局变量，一种是未定义
+        if (!stack) {
+          throw new Error(`Uncaught ReferenceError: "${name}" is not defined`)
+        }
+      }
+      return stack
+    }
+
+    // @ts-ignore
+    const left_stack = handleStack(left_name, test.left?.type)?.value ?? test?.left?.value
+    // @ts-ignore
+    const right_stack = handleStack(right_name, test.right?.type)?.value ?? test?.right?.value
+    // @ts-ignore
+    const operator = test?.operator || ''
+
+    // 判断条件是否成立
+    const result = this.handleTest(left_stack, right_stack, operator)
+
+    console.log('result', result)
+
+    // 条件成立，进入if语句
+    if (result) {
+      // @ts-ignore
+      // this.handleBlockStatement(path.node.consequent)
+      console.log(this.stack)
+    }
+  }
+
+  /**
+   * 判断条件是否成立
+   * @param {string | number} left 左边值
+   * @param {string | number} right 右边值
+   * @param {string} operator 操作符
+   * @returns {boolean}
+   */
+  handleTest(left: string | number, right: string | number, operator: string) {
+    console.log('判断条件 handleTest', left, right, operator)
+    switch (operator) {
+      case '==':
+        return left == right
+      case '===':
+        return left === right
+      case '!=':
+        return left != right
+      case '!==':
+        return left !== right
+      case '>':
+        return left > right
+      case '>=':
+        return left >= right
+      case '<':
+        return left < right
+      case '<=':
+        return left <= right
+      default:
+        return false
+    }
   }
 }
 

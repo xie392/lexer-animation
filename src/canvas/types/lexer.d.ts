@@ -1,7 +1,12 @@
 import * as acorn from 'acorn'
 import * as parser from '@babel/parser'
 // import traverse from '@babel/traverse'
-import { StatementOptionsInterface, ExpressionOptionsInterface } from '$/types'
+import {
+  StatementOptionsInterface,
+  ExpressionOptionsInterface,
+  AssignmentExpressionInterface
+} from '$/types'
+import * as t from '@babel/types'
 
 /**
  * 伪编译器接口
@@ -39,10 +44,10 @@ export class LexerInterface {
    */
   queue: QueueInterface[]
   /**
-   * 需要跳过暂时不解析的节点
-   * @type {LocationInterface[]}
+   * 需要跳过行号
+   * @type {number[]}
    */
-  skip: LocationInterface[]
+  skip: number[]
   /**
    * 进栈
    * @param {StackInterface} declaration 变量声明
@@ -132,11 +137,10 @@ export interface StackInterface {
   type: VariableInterface
   /**
    * 变量作用域
-   * @type {('global' | 'local')} global 全局变量 local 局部变量
+   * @type {string} global 全局变量 local 局部变量
    * @memberof HeapVariableInterface
-   * @default 'global'
    */
-  scope: 'global' | 'local'
+  // scope: string
   /**
    * 变量是否为常量
    * @type {boolean} true 常量 false 变量 const 不可修改
@@ -213,13 +217,12 @@ export interface QueueInterface {
    * @type {string}
    * @default ''
    */
-  name: 'statement' | 'expression'
+  name: 'Statement' | 'Expression' | 'AssignmentExpression' | 'BinaryExpression'
   /**
    * 队列参数
-   * @type {StatementOptionsInterface | ExpressionOptionsInterface}
    * @default []
    */
-  params: StatementOptionsInterface | ExpressionOptionsInterface
+  params: StatementOptionsInterface | ExpressionOptionsInterface | AssignmentExpressionInterface
 }
 
 /**

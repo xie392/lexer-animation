@@ -34,7 +34,7 @@ export const useRunStore = defineStore(
         lexer.traverse()
       } catch (err: any) {
         error.value = err.message
-        console.log(err.message)
+        console.error(err.message)
       }
     }
 

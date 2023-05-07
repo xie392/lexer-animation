@@ -12,15 +12,15 @@ const { error } = storeToRefs(runStore)
 //   console.log('error', error.value)
 // })
 
-watch(
-  error,
-  (val) => {
-    console.log('error', val)
-  },
-  {
-    deep: true
-  }
-)
+// watch(
+//   error,
+//   (val) => {
+//     console.log('error', val)
+//   },
+//   {
+//     deep: true
+//   }
+// )
 
 const animation = ref<HTMLElement | null>(null)
 
@@ -69,7 +69,7 @@ onMounted(createCanvas)
       <div id="canvas" class="canvas"></div>
     </div>
     <div class="terminal">
-      <span class="error">{{ error }}</span>
+      <p class="error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -107,6 +107,7 @@ onMounted(createCanvas)
 
     .error {
       color: red;
+      white-space: pre-wrap;
     }
   }
 }

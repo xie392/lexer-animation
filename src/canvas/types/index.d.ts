@@ -229,6 +229,23 @@ export interface ExpressionOptionsInterface {
   result: string
 }
 
+/**
+ * 赋值表达式
+ * @interface AssignmentExpressionInterface
+ */
+export interface AssignmentExpressionInterface {
+  /**
+   * 左边的值
+   * @type {string}
+   */
+  left: string
+  /**
+   * 右边的值
+   * @type {string}
+   */
+  right: string | number
+}
+
 export interface AnimationGroupInterface {
   /**
    * 动画 key 值

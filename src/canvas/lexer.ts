@@ -293,6 +293,7 @@ class Lexer implements LexerInterface {
       this.handleLogicalExpression(node.left as t.LogicalExpression)
     } else {
       console.log('left', node)
+      // @ts-ignore
       const { name, value } = node
       if (name) {
         // 查找变量
@@ -308,6 +309,7 @@ class Lexer implements LexerInterface {
     if ('right' in node) {
       this.handleLogicalExpression(node.right as t.LogicalExpression)
     } else {
+      // @ts-ignore
       const { name, value } = node
       if (name) {
         // 查找变量
@@ -502,74 +504,30 @@ class Lexer implements LexerInterface {
    * @returns {any}
    */
   handleBasicExpression(node: t.BinaryExpression): any {
-    let result
+    if (node.type !== 'BinaryExpression') {
+      // @ts-ignore
+      const { name, value } = node
+      return name ? this.findStack(name)?.value : value
+    }
 
-    
+    const { left, right, operator } = node
 
-    // let left, right
+    const leftValue = this.handleBasicExpression(left as t.BinaryExpression)
+    const rightValue = this.handleBasicExpression(right as t.BinaryExpression)
 
-    // if (node?.left) {
-    //   left = this.handleBasicExpression(node.left as t.BinaryExpression)
-    // }
-
-    // if (node.right) {
-    //   right = this.handleBasicExpression(node.right as t.BinaryExpression)
-    // }
-
-    // console.log('left', left, right)
-
-    // let left_value, right_value
-    // const { name: l_name, value: l_value } = left
-    // const { name: r_name, value: r_value } = right
-
-    // const location = node.loc
-
-    // if (l_name) {
-    //   const stack = this.findStack(l_name)
-
-    //   if (!stack || !stack.value) {
-    //     const error = new Error(`Variable '${l_name}' is not defined\n`)
-    //     this.throwError(error.message, location as t.SourceLocation)
-    //   }
-
-    //   left_value = stack?.value
-    // } else {
-    //   left_value = l_value
-    // }
-
-    // if (r_name) {
-    //   const stack = this.findStack(r_name)
-
-    //   if (!stack || !stack.value) {
-    //     const error = new Error(`Variable '${r_name}' is not defined\n`)
-    //     this.throwError(error.message, location as t.SourceLocation)
-    //   }
-
-    //   right_value = stack?.value
-    // } else {
-    //   right_value = r_value
-    // }
-
-    // switch (node.operator) {
-    //   case '+':
-    //     result = left_value + right_value
-    //     break
-    //   case '-':
-    //     result = left_value - right_value
-    //     break
-    //   case '*':
-    //     result = left_value * right_value
-    //     break
-    //   case '/':
-    //     result = left_value / right_value
-    //     break
-    //   default:
-    //     throw new Error(`Unknown operator: ${node.operator}`)
-    // }
-
-    return result
+    switch (operator) {
+      case '+':
+        return leftValue + rightValue
+      case '-':
+        return leftValue - rightValue
+      case '*':
+        return leftValue * rightValue
+      case '/':
+        return leftValue / rightValue
+      default:
+        throw new Error(`Unsupported operator: ${operator}`)
+    }
   }
-  // }
 }
 
 export default Lexer

@@ -7,12 +7,12 @@ import { ref, computed, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import './index'
 import { themeList, langList, fontSizeList } from './index'
-import * as acorn from 'acorn'
+// import * as acorn from 'acorn'
 import { useRunStore } from '@/stores/run'
 
 const runStore = useRunStore()
 
-const { is_run, code: run_code, error } = storeToRefs(runStore)
+const { code: run_code } = storeToRefs(runStore)
 
 // 配置路径
 ace.config.set('basePath', '/node_modules/ace-builds/src-noconflict/')

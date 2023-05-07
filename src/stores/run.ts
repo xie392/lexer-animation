@@ -1,11 +1,11 @@
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import * as acorn from 'acorn'
-import * as walk from 'acorn-walk'
+// import * as acorn from 'acorn'
+// import * as walk from 'acorn-walk'
 import Draw, { pluginList, Lexer } from '$/index'
 // import * as tokenizer from '@babel/tokenizer'
-import * as parser from '@babel/parser'
-import traverse from '@babel/traverse'
+// import * as parser from '@babel/parser'
+// import traverse from '@babel/traverse'
 
 interface AstNode {
   type: string

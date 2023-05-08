@@ -142,9 +142,27 @@ export interface DrawInterface {
   destroy(): void
 }
 
+/**
+ * Draw 类的配置
+ * @export DrawOptionsInterface
+ */
 export interface DrawOptionsInterface {
+  /**
+   * 画布 id
+   * @param {string} id
+   */
   id: string
+  /**
+   * 画布宽度
+   * @param {number} width
+   * @default 300
+   */
   width?: number
+  /**
+   * 画布高度
+   * @param {number} height
+   * @default 150
+   */
   height?: number
 }
 
@@ -188,6 +206,10 @@ export interface PointListInterface {
   value: ListInterface
 }
 
+/**
+ * 存储在队列中的图形
+ * @interface QueueInterface
+ */
 export type QueueInterface =
   | Konva.Text
   | Konva.Rect
@@ -211,17 +233,44 @@ export type QueueInterface =
   | Konva.Shape
   | any
 
+/**
+ * 声明变量的参数
+ * @interface StatementOptionsInterface
+ */
 export interface StatementOptionsInterface {
+  /**
+   * 变量声明的类型 let | const | var
+   * @type {string}
+   */
   kind: string
+  /**
+   * 变量内容
+   * @type {Array<{ name: string; value: any }>}
+   * @example
+   * let a = 1, b = 2
+   * [
+   *  { name: 'a', value: 1 },
+   *  { name: 'b', value: 2 },
+   *  ...
+   * ]
+   */
   body: Array<{ name: string; value: any }>
 }
 
+/**
+ * 普通表达式 a + b   1 + 2
+ * @interface ExpressionInterface
+ */
 export interface ExpressionInterface {
   left: ExpressionInterface | string
   right: ExpressionInterface | string
   operator: string
 }
 
+/**
+ * 表达式所需参数
+ * @interface ExpressionOptionsInterface
+ */
 export interface ExpressionOptionsInterface {
   left: ExpressionInterface | string
   right: ExpressionInterface | string
@@ -244,6 +293,31 @@ export interface AssignmentExpressionInterface {
    * @type {string}
    */
   right: string | number
+}
+
+/**
+ * 函数
+ * @interface FunctionInterface
+ */
+export interface FunctionInterface {
+  /**
+   * 函数名
+   * @type {string}
+   * @memberof FunctionInterface
+   */
+  name: string
+  /**
+   * 函数参数
+   * @type {string[]}
+   * @memberof FunctionInterface
+   */
+  params: string[]
+  /**
+   * 函数体
+   * @type {string}
+   * @memberof FunctionInterface
+   */
+  body: string
 }
 
 export interface AnimationGroupInterface {
@@ -279,4 +353,11 @@ export interface RenderInterface {
    * @param {QueueInterface} value
    */
   value: QueueInterface
+  /**
+   * 动画参数
+   * @param {any} options
+   */
+  options?: {
+    [key: string]: any
+  }
 }

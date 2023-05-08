@@ -174,5 +174,4 @@ class Expression extends Plugin {
   }
 }
 
-
 export default Expression

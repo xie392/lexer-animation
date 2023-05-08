@@ -27,36 +27,46 @@ const animation = ref<HTMLElement | null>(null)
 const createCanvas = () => {
   // if (!animation.value) return
   const draw = new Draw({ id: 'canvas' }, pluginList)
-  draw.insert('Statement', {
-    kind: 'int',
-    body: [
-      {
-        name: 'a',
-        value: 11
-      },
-      {
-        name: 'b',
-        value: 1001
-      }
-    ]
-  })
-  draw.blockStart()
-  draw.blockAddText(`if (a < b) {`)
-  draw.blockAddText(`   a = b`)
-  draw.blockAddText(`}`)
-  draw.insert('Expression', {
+  // draw.insert('Statement', {
+  //   kind: 'int',
+  //   body: [
+  //     {
+  //       name: 'a',
+  //       value: 11
+  //     },
+  //     {
+  //       name: 'b',
+  //       value: 1001
+  //     }
+  //   ]
+  // })
+  // draw.blockStart()
+  // draw.blockAddText(`if (a < b) {`)
+  // draw.blockAddText(`   a = b`)
+  // draw.blockAddText(`}`)
+  // draw.insert('Expression', {
+  //   left: 'a',
+  //   right: 'b',
+  //   operator: '<',
+  //   result: 'true'
+  // })
+  // draw.insert('Expression', {
+  //   left: 'a',
+  //   right: 'b',
+  //   operator: '=',
+  //   result: 'a = 1012'
+  // })
+  // draw.blockEnd()
+
+  draw.insert('AssignmentExpression', {
     left: 'a',
-    right: 'b',
-    operator: '<',
-    result: 'true'
+    right: [
+      { name: 'b', value: 1001, type: 'identifier' },
+      { name: '+', type: 'operator' },
+      { name: '1', value: 1, type: 'number' }
+    ],
+    result: '1002'
   })
-  draw.insert('Expression', {
-    left: 'a',
-    right: 'b',
-    operator: '=',
-    result: 'a = 1012'
-  })
-  draw.blockEnd()
   draw.render(100)
 }
 

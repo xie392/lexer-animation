@@ -58,10 +58,6 @@ class Draw implements DrawInterface {
     return stage
   }
 
-  // add(...konvaList: Konva.Shape[]) {
-  //   this.layer.add(...konvaList)
-  // }
-
   getGroupEnd() {
     return this.group_point[this.group_point.length - 1]
   }
@@ -134,9 +130,9 @@ class Draw implements DrawInterface {
 
   blockAddText(text: string) {
     const group_list = this.block_group.children || []
-    // console.log('group_list', this.block_Rect.y())
 
     let y = this.block_Rect.y() + 30
+
     if (group_list.length > 0) {
       const last = group_list[group_list.length - 1]
       y = last.y() + 30
@@ -147,7 +143,6 @@ class Draw implements DrawInterface {
     }
 
     const Text = new Konva.Text({
-      // width: this.block_Rect.width() * 0.2 - 40,
       x: 30,
       y,
       text: text,
@@ -158,7 +153,6 @@ class Draw implements DrawInterface {
       align: 'center'
     })
     this.block_group.add(Text)
-    // console.log(this.block_group.children?.[0])
     this.queue.push([{ name: 'text', value: Text }])
   }
 
@@ -186,13 +180,16 @@ class Draw implements DrawInterface {
           this.layer.add(shape.value)
           this.layer.draw()
 
+          // 这里主要是为了计算画布的高度 当元素要超出画布的时候，就要增加画布的高度 而且滚动到最新的位置
           if (shape.value.x() + shape.value.height() > this.stage.height()) {
             this.stage.height(shape.value.x() + shape.value.height() + 20)
             this.el.style.overflowY = 'scroll'
             this.el.style.overflowX = 'hidden'
+            // TODO: 滚动到最新的位置
             // this.el.scrollTop += 10
           }
-          const options = this.animation_group.find((item) => item.kind === shape.name)?.value || {}
+          // const options = this.animation_group.find((item) => item.kind === shape.name)?.value || {}
+          const options = shape?.options || {}
           requestAnimationFrame(() => {
             // 执行动画
             this.animation(shape.value, options)

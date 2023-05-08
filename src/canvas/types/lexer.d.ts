@@ -4,7 +4,8 @@ import * as parser from '@babel/parser'
 import {
   StatementOptionsInterface,
   ExpressionOptionsInterface,
-  AssignmentExpressionInterface
+  AssignmentExpressionInterface,
+  FunctionInterface
 } from '$/types'
 import * as t from '@babel/types'
 
@@ -65,6 +66,11 @@ export class LexerInterface {
    * @returns {StackInterface | undefined}
    */
   stack_pop(): StackInterface | undefined
+  /**
+   * 添加到堆
+   * @param {HeapInterface} declaration 函数声明
+   */
+  heap_push(declaration: HeapInterface): void
   /**
    * 词法分析
    * @returns {}
@@ -195,10 +201,11 @@ export interface HeapInterface {
   return?: any
   /**
    * 函数体
-   * @type {Array<VariableDeclarationInterface>}
+   * @type { t.BlockStatement}
    * @default []
    */
-  body: Array<VariableDeclarationInterface | HeapInterface>
+  body: t.BlockStatement
+
   /**
    * 位置
    * @type {LocationInterface}
@@ -222,7 +229,11 @@ export interface QueueInterface {
    * 队列参数
    * @default []
    */
-  params: StatementOptionsInterface | ExpressionOptionsInterface | AssignmentExpressionInterface
+  params:
+    | StatementOptionsInterface
+    | ExpressionOptionsInterface
+    | AssignmentExpressionInterface
+    | FunctionInterface
 }
 
 /**

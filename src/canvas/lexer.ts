@@ -40,6 +40,10 @@ class Lexer implements LexerInterface {
     return this.stack.pop()
   }
 
+  heap_push(declaration: HeapInterface) {
+    this.heap.push(declaration)
+  }
+
   queue_push(declaration: QueueInterface) {
     this.queue.push(declaration)
   }
@@ -126,7 +130,10 @@ class Lexer implements LexerInterface {
           const location = path.node.loc
           _this.throwError(error.message, location as t.SourceLocation)
         }
+
+        // console.log('enter', path)
       },
+
       // 退出节点
       // exit(path) {
       //   console.log('exit', path)
@@ -148,6 +155,14 @@ class Lexer implements LexerInterface {
       // if语句
       IfStatement(path) {
         _this.handleIfStatement(path.node)
+      },
+      // 函数
+      FunctionDeclaration(path) {
+        _this.handleFunctionDeclaration(path.node)
+      },
+      // 函数调用
+      CallExpression(path) {
+        _this.handleCallExpression(path.node)
       }
     })
 
@@ -224,6 +239,25 @@ class Lexer implements LexerInterface {
   }
 
   /**
+   * 处理函数调用
+   * @param {t.CallExpression} node
+   * @returns {void}
+   */
+  handleCallExpression(node: t.CallExpression) {
+    const { callee, arguments: args } = node
+    // @ts-ignore
+    const name = callee?.name || ''
+    const params = args?.map((item) => {
+      // @ts-ignore
+      return item?.value || null
+    })
+
+    console.log('函数调用', name, params, node)
+
+    // this.queue_push({
+  }
+
+  /**
    * 处理表达式
    * TODO: 表达式类型判断，目前只处理简单判断或赋值
    * @param {Nt.ExpressionStatement} node
@@ -276,6 +310,32 @@ class Lexer implements LexerInterface {
       // 添加队列时需要跳过的行数
       this.skip.push(...number_list)
     }
+  }
+
+  /**
+   * 处理函数声明
+   * @param {t.FunctionDeclaration} node
+   * @returns {void}
+   */
+  handleFunctionDeclaration(node: t.FunctionDeclaration) {
+    const { id, params, body, loc } = node
+    // console.log('函数声明', node)
+    const location = {
+      start: loc?.start.line || 0,
+      end: loc?.end.line || 0
+    }
+
+    // 把函数添加到堆中
+    this.heap_push({
+      name: id?.name || '',
+      // @ts-ignore
+      params: params.map((item) => item?.name),
+      body,
+      loc: location
+    })
+
+    // 需要跳过的行数
+    this.skip.push(location.start, location.end)
   }
 
   /**

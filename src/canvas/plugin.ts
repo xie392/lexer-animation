@@ -1,12 +1,5 @@
 import { DrawInterface, RenderInterface } from '$/types/index'
 
-// export interface PluginInterface {
-//   draw: DrawInterface
-//   params: any
-//   getName: () => string
-//   render(): Array<RenderInterface>
-// }
-
 /**
  * 插件必须继承的抽象类
  * @abstract

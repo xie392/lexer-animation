@@ -1,18 +1,35 @@
-# 核心目录介绍
+# 项目介绍
+
+本项目使用 Konva 技术绘制动画，程序解析采用 babel。具体而言，我们使用了 "@babel/parser" 来生成抽象语法树（AST），同时使用 "@babel/traverse" 遍历语法树。在遍历过程中，我们还利用了 "@babel/code-frame" 来快速检查一些基本语法错误。这种优化方式可以让代码更加高效、易于维护，同时提升代码的可读性和可靠性。
+
+# 核心目录结构
 
 ```bash
-├── canvas              # 动画绘制
-│   ├── README.md       # 介绍
-│   ├── draw.ts         # 绘制
-│   ├── index.ts        # 入口
-│   ├── all-kit.ts      # 工具集
-│   ├── plugin.ts       # 插件，用于扩展，导出抽象类，要想写新插件需要继承实现
-├── plugin              # 插件
-│   ├── expression.ts   # 表达式
-│   ├── statement.ts    # 声明
-├── types               # 类型
-│   ├── index.ts        # 基本类型声明
-│   ├── plugin.ts       # 插件类型声明
+├── canvas                          # 动画绘制
+│   ├── README.md                   # 介绍
+│   ├── draw.ts                     # 绘制动画类
+│   ├── index.ts                    # 入口文件
+│   ├── all-kit.ts                  # 插件集合，后面需要引入到绘制动画类中
+│   ├── plugin.ts                   # 插件，用于扩展，导出抽象类，要想写新插件需要继承实现
+│   ├── lexer.ts                    # 伪编译器，用于程序解析
+├── hooks                           # 一些封装好的 hooks
+│   ├── useBinaryExpression.ts      # 处理一些简单表达式 hooks
+│   ├── useExpression.ts            # 计算表达式结果的 hooks
+├── lexer                           # 伪编译器解析目录
+│   ├── useAssignmentExpression.ts  # 处理赋值表达式
+│   ├── useCheckError.ts            # 处理错误，用于抛出一些语法错误
+│   ├── useElseStatement.ts         # 处理 else
+│   ├── useFunctionDeclaration.ts   # 处理函数声明
+│   ├── useIfStatement.ts           # 处理 if / else if 语句
+│   ├── useVariableDeclaration.ts   # 处理变量声明
+├── plugin                          # 插件
+│   ├── AssignmentExpression.ts     # 赋值表达式动画
+│   ├── expression.ts               # 普通表达式动画
+│   ├── statement.ts                # 声明变量动画
+├── types                           # 类型
+│   ├── index.ts                    # 基本类型声明
+│   ├── plugin.ts                   # 插件类型声明
+│   ├── lexer.ts                    # 伪编译器类型声明
 ```
 
 # 使用

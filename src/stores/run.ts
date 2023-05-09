@@ -1,17 +1,13 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-// import * as acorn from 'acorn'
-// import * as walk from 'acorn-walk'
 import Draw, { pluginList, Lexer } from '$/index'
-// import * as tokenizer from '@babel/tokenizer'
-// import * as parser from '@babel/parser'
-// import traverse from '@babel/traverse'
+import useTraverse, { QueueListInterface } from '@/helper/useTraverse'
 
-interface AstNode {
-  type: string
-  value?: any
-  [key: string]: any
-}
+// interface AstNode {
+//   type: string
+//   value?: any
+//   [key: string]: any
+// }
 
 export const useRunStore = defineStore(
   'run',
@@ -22,23 +18,57 @@ export const useRunStore = defineStore(
     const tokens = ref<any[]>([])
     const ast = ref<any>({})
     const error = ref<string>('')
+    const queue = ref<QueueListInterface[]>([])
 
     // 监听是否运行
     // watch(is_run, () => {})
 
     const run = () => {
       try {
+
+        error.value = ''
+
+        const draw = new Draw({ id: 'canvas' }, pluginList)
+
         const lexer = new Lexer(code.value)
         tokens.value = lexer.tokenizer()
         ast.value = lexer.parser()
-        lexer.traverse()
+        const traverse_list = lexer.traverse()
+
+        queue.value = useTraverse(traverse_list)
+        let end = 0
+        queue.value.map((v) => {
+          const line = v?.loc?.start?.line ?? 0
+
+          if (end !== 0 && line > end) {
+            draw.blockEnd()
+            end = 0
+          }
+
+          draw.insert(v.name, v.params)
+
+          // 块元素
+          if (v.name === 'IfStatement') {
+            draw.blockStart()
+            draw.blockAddText(`if(${v.params.left} ${v.params.operator} ${v.params.right})`)
+            draw.insert('Expression', {
+              left: v.params.left,
+              right: v.params.right,
+              operator: v.params.operator,
+              result: v.params.result
+            })
+            end = v?.loc?.end?.line ?? 0
+          }
+        })
+
+        draw.render(1000)
       } catch (err: any) {
         error.value = err.message
-        console.error(err.message)
+        console.error(err)
       }
     }
 
-    return { is_run, code, tokens, ast, error, run }
+    return { is_run, code, tokens, ast, error, run, queue }
   },
   {
     // persist: {

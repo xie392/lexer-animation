@@ -15,7 +15,7 @@ const runStore = useRunStore()
 const { code: run_code } = storeToRefs(runStore)
 
 // 配置路径
-ace.config.set('basePath', '/node_modules/ace-builds/src-noconflict/')
+ace.config.set('basePath', '/ace-builds/src-noconflict/')
 
 // 主题
 const themeSelect = ref<string>('tomorrow')
@@ -27,13 +27,14 @@ const fontSizeSelect = ref<number>(14)
 const theme = computed<string>(() => themeSelect.value)
 const lang = computed<string>(() => langSelect.value)
 
-const content = ref(`let a = 1, b = 2, c = 0
-if(a < b) {
-  a + b
+const content = ref(`let c = 0
+
+if(c != 3) {
+  c = 10
 } else {
-  a - b
+  c = 11
 }
-console.log(c)
+
 `)
 const codeEditor = ref<Ace.Editor | null>(null)
 
@@ -69,9 +70,9 @@ const changeFontSize = (val: number) => {
   codeEditor.value && codeEditor.value?.setFontSize(val)
 }
 
-// const changeTheme = (val: string) => {
-//   codeEditor.value && codeEditor.value?.setTheme(`ace/theme/${val}`)
-// }
+const changeTheme = (val: string) => {
+  codeEditor.value && codeEditor.value?.setTheme(`ace/theme/${val}`)
+}
 
 const changeLang = (val: string) => {
   codeEditor.value && codeEditor.value.session.setMode(val)
@@ -94,30 +95,30 @@ onUnmounted(() => {
   <div class="code-editor">
     <div class="flex code-editor-header">
       <div class="flex code-editor-header-left">
-        <div class="flex code-editor-header-item">
+        <!-- <div class="flex code-editor-header-item">
           <span clas="span-title">字体:</span>
           <a-select v-model:value="fontSizeSelect" @change="changeFontSize">
             <a-select-option v-for="(v, i) in fontSizeList" :key="i" :value="v">
               {{ v }}
             </a-select-option>
           </a-select>
-        </div>
+        </div> -->
         <!-- <div class="flex code-editor-header-item">
           <span clas="span-title">语言:</span>
-          <a-select v-model:value="langSelect" @change="changeTheme">
+          <a-select v-model:value="langSelect" @change="changeTheme" disabled>
             <a-select-option v-for="(v, i) in langList" :key="i" :value="v.value">
               {{ v.label }}
             </a-select-option>
           </a-select>
         </div> -->
-        <div class="flex code-editor-header-item">
+        <!-- <div class="flex code-editor-header-item">
           <span clas="span-title">主题:</span>
           <a-select v-model:value="themeSelect" @change="changeLang">
             <a-select-option v-for="(v, i) in themeList" :key="i" :value="v.value">
               {{ v.label }}
             </a-select-option>
           </a-select>
-        </div>
+        </div> -->
       </div>
       <div class="flex code-editor-header-right">
         <a-button type="primary" @click="run">
@@ -182,7 +183,7 @@ onUnmounted(() => {
 
     .editor {
       width: 100%;
-      height: calc(100vh - 120px);
+      height: calc(100vh - 60px);
       overflow: hidden;
       box-sizing: border-box;
       border-top: 1px solid var(--border-color, #e8e8e8);

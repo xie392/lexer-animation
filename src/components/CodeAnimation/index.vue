@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia'
 
 const runStore = useRunStore()
 
-const { error } = storeToRefs(runStore)
+const { error, queue } = storeToRefs(runStore)
 
 // watchEffect(() => {
 //   console.log('error', error.value)
@@ -57,17 +57,23 @@ const createCanvas = () => {
   //   result: 'a = 1012'
   // })
   // draw.blockEnd()
+  // draw.insert('AssignmentExpression', {
+  //   left: 'a',
+  //   right: [
+  //     { name: 'b', value: 1001, type: 'identifier' },
+  //     { name: '+', type: 'operator' },
+  //     { name: '1', value: 1, type: 'number' }
+  //   ],
+  //   result: '1002'
+  // })
 
-  draw.insert('AssignmentExpression', {
-    left: 'a',
-    right: [
-      { name: 'b', value: 1001, type: 'identifier' },
-      { name: '+', type: 'operator' },
-      { name: '1', value: 1, type: 'number' }
-    ],
-    result: '1002'
-  })
-  draw.render(100)
+  // console.log('queue', queue.value)
+
+  // queue.value.map((v) => {
+  //   draw.insert(v.name, v.params)
+  // })
+
+  // draw.render(100)
 }
 
 onMounted(createCanvas)
@@ -91,8 +97,8 @@ onMounted(createCanvas)
 
   .animation {
     flex: 1;
-    min-height: 400px;
-    max-height: calc(100vh - 300px);
+    // min-height: 400px;
+    // max-height: calc(100vh - 300px);
     overflow-y: auto;
     border-bottom: 1px solid var(--border-color, #e8e8e8);
 
@@ -114,6 +120,8 @@ onMounted(createCanvas)
     background-color: #fff;
     padding: 10px 5px;
     box-sizing: border-box;
+    height: 300px;
+    overflow-y: auto;
 
     .error {
       color: red;

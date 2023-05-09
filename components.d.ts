@@ -10,8 +10,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
-    ASelect: typeof import('ant-design-vue/es')['Select']
-    ASelectOption: typeof import('ant-design-vue/es')['SelectOption']
     CodeAnimation: typeof import('./src/components/CodeAnimation/index.vue')['default']
     CodeBlock: typeof import('./src/components/CodeBlock/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

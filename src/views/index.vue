@@ -4,9 +4,9 @@ import Home from '@/views/home/index.vue'
 </script>
 
 <template>
-  <Layout>
+  <!-- <Layout> -->
     <Home />
-  </Layout>
+  <!-- </Layout> -->
 </template>
 
 <style scoped></style>

@@ -29,7 +29,6 @@ class AssignmentExpression extends Plugin {
     const left_shape = this.group.children?.at(-1) as Konva.Group
     const shape_x = left_shape?.x() || 0
     const shape_w = left_shape?.width() || 0
-    console.log('left_shape', left_shape)
 
     const x = shape_x + shape_w
 
@@ -106,16 +105,16 @@ class AssignmentExpression extends Plugin {
   drawGroup() {
     const { left, right, result } = this.params
 
-    this.group.add(
-      new Konva.Rect({
-        width: this.draw?.width - 20,
-        height: 60,
-        stroke: '#ccc',
-        strokeWidth: 1,
-        cornerRadius: 3,
-        x: 10
-      })
-    )
+    const group_rect = new Konva.Rect({
+      width: this.draw?.width - 20,
+      height: 60,
+      stroke: '#ccc',
+      strokeWidth: 1,
+      cornerRadius: 3,
+      x: 10
+    })
+
+    this.group.add(group_rect)
 
     const right_text = right.map((v) => v.name).join(' ')
 
@@ -153,8 +152,10 @@ class AssignmentExpression extends Plugin {
 
     this.group.add(group)
 
+    // console.log('this.group', this.group)
+
     // // 循环右边参数
-    right.forEach((v, i) => {
+    right.forEach((v) => {
       // 绘制矩形
       if (v.type === 'operator') {
         this.drawOperator(v.name)
@@ -169,8 +170,11 @@ class AssignmentExpression extends Plugin {
     this.group.add(text, arrow)
 
     // 设置组的位置
-    this.group.x(10)
-    this.group.y(10)
+    // let y = 0
+    // const { y2 } = this.draw.getGroupEnd()
+    // if (this.draw.block) {
+    //   console.log('this.draw.block', y2)
+    // }
 
     // 给组添加类名
     this.group.className = 'AssignmentExpression'

@@ -119,3 +119,18 @@ export interface AssignmentExpressionInterface extends ExpressionOptionsInterfac
    */
   result: string
 }
+
+
+/**
+ * if 参数
+ * @interface IfStatementInterface
+ * @extends {ExpressionOptionsInterface}
+ */
+// export interface IfStatementInterface extends ExpressionOptionsInterface {
+//   /**
+//    * 条件
+//    * @type {string}
+//    * @example
+//    */
+//   test: string
+

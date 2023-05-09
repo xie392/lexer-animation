@@ -189,6 +189,7 @@ class Draw implements DrawInterface {
             // this.el.scrollTop += 10
           }
           // const options = this.animation_group.find((item) => item.kind === shape.name)?.value || {}
+
           const options = shape?.options || {}
           requestAnimationFrame(() => {
             // 执行动画

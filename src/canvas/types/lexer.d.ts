@@ -46,31 +46,31 @@ export class LexerInterface {
   queue: QueueInterface[]
   /**
    * 需要跳过行号
-   * @type {number[]}
+   * @type {LocationInterface[]}
    */
-  skip: number[]
-  /**
-   * 进栈
-   * @param {StackInterface} declaration 变量声明
-   * @returns {void}
-   */
-  stack_push(declaration: StackInterface): void
-  /**
-   * 删除某个变量
-   * @param {string} name 变量名
-   * @returns {void}
-   */
-  stack_del(name: string): void
-  /**
-   * 出栈
-   * @returns {StackInterface | undefined}
-   */
-  stack_pop(): StackInterface | undefined
-  /**
-   * 添加到堆
-   * @param {HeapInterface} declaration 函数声明
-   */
-  heap_push(declaration: HeapInterface): void
+  skip: LocationInterface[]
+  // /**
+  //  * 进栈
+  //  * @param {StackInterface} declaration 变量声明
+  //  * @returns {void}
+  //  */
+  // stack_push(declaration: StackInterface): void
+  // /**
+  //  * 删除某个变量
+  //  * @param {string} name 变量名
+  //  * @returns {void}
+  //  */
+  // stack_del(name: string): void
+  // /**
+  //  * 出栈
+  //  * @returns {StackInterface | undefined}
+  //  */
+  // stack_pop(): StackInterface | undefined
+  // /**
+  //  * 添加到堆
+  //  * @param {HeapInterface} declaration 函数声明
+  //  */
+  // heap_push(declaration: HeapInterface): void
   /**
    * 词法分析
    * @returns {}
@@ -86,11 +86,30 @@ export class LexerInterface {
    * @returns {void}
    */
   traverse(): void
+  // /**
+  //  * 添加到队列
+  //  * @param {QueueInterface} declaration
+  //  */
+  // queue_push(declaration: QueueInterface): void
   /**
-   * 添加到队列
-   * @param {QueueInterface} declaration
+   * 抛出异常
+   * @param {string} message 错误信息
+   * @param {t.SourceLocation} location 错误位置
+   * @returns {void}
    */
-  queue_push(declaration: QueueInterface): void
+  throwError(message: string, location: t.SourceLocation): void
+  /**
+   * 是否需要跳过该行
+   * @param {number} line 行号
+   * @returns {boolean}
+   */
+  isSkip(line: number): boolean
+  /**
+   * 从后面往回找栈中的变量
+   * @param name 变量名
+   * @returns {StackInterface | null}
+   */
+  findStack(name: string): StackInterface | null
 }
 
 /**
@@ -214,27 +233,78 @@ export interface HeapInterface {
   loc: LocationInterface
 }
 
-/**
- * 队列
- * @export QueueInterface
- */
-export interface QueueInterface {
-  /**
-   * 队列名
-   * @type {string}
-   * @default ''
-   */
-  name: 'Statement' | 'Expression' | 'AssignmentExpression' | 'BinaryExpression'
-  /**
-   * 队列参数
-   * @default []
-   */
-  params:
-    | StatementOptionsInterface
-    | ExpressionOptionsInterface
-    | AssignmentExpressionInterface
-    | FunctionInterface
-}
+// /**
+//  * 队列
+//  * @export QueueInterface
+//  */
+// export interface QueueInterface {
+//   /**
+//    * 队列名
+//    * @type {string}
+//    * @default ''
+//    */
+//   name: 'Statement' | 'Expression' | 'AssignmentExpression' | 'BinaryExpression' | 'Function' | 'IfStatement'
+//   /**
+//    * 队列参数
+//    * @default []
+//    */
+//   params?:any
+//     // | StatementOptionsInterface
+//     // | ExpressionOptionsInterface
+//     // | AssignmentExpressionInterface
+//     // | FunctionInterface
+//   /**
+//    * 主体
+//    * @type {any[]}
+//    */
+//   body: any[]
+// }
+
+export type QueueInterface =
+  | t.VariableDeclaration
+  | t.AssignmentExpression
+  | t.IfStatement
+  | t.CallExpression
+  | t.Statement
+
+// /**
+//  * 队列
+//  * @export QueueInterface
+//  */
+// export interface QueueInterface {
+//   /**
+//    * 队列名
+//    * @type {string}
+//    * @default ''
+//    */
+//   name: string
+//   /**
+//    * 队列参数
+//    * @default []
+//    */
+//   params?: Array<{
+//     /**
+//      * 参数名
+//      * @type {string}
+//      */
+//     name: string
+//     /**
+//      * 参数默认值
+//      * @type {any}
+//      */
+//     default: any
+//   }>
+//   /**
+//    * 主体
+//    * @type {any[]}
+//    */
+//   body: any[]
+//   /**
+//    * 运行到的行号
+//    * @type {t.SourceLocation}
+//    */
+//   loc: t.SourceLocation | null | undefined
+// }
 
 /**
  * 位置接口

@@ -137,11 +137,11 @@ class Expression extends Plugin {
     const { left, right, operator, result } = this.params
 
     // 处理层级关系
-    // this.drawGroup(left as string)
-    // this.drawGroup(operator, true)
-    // this.drawGroup(right as string)
-    // this.drawGroup('->', true)
-    // this.drawGroup(result)
+    this.drawGroup(left as string)
+    this.drawGroup(operator, true)
+    right && this.drawGroup(right as string)
+    this.drawGroup('->', true)
+    this.drawGroup(result)
 
     // 添加坐标到坐标组
     this.draw.addGroupPoint({

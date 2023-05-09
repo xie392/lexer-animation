@@ -20,8 +20,8 @@ import CodeAnimation from '@/components/CodeAnimation/index.vue'
 
   .grid-item {
     background-color: var(--bg-color, #fff);
-    // height: calc(100vh - 60px);
-    height: 100vh;
+    height: calc(100vh - 60px);
+    // height: 100vh;
     padding: 0 0px 0 0;
 
     &:first-child {

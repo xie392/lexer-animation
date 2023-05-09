@@ -9,7 +9,6 @@ import { useBasicExpression } from '$/hooks/useBinaryExpression'
  * @returns {void}
  */
 function useAssignmentExpression(node: t.AssignmentExpression, _this: LexerInterface) {
-
   // 如果在需要跳过的行列中
   if (_this.isSkip(node.loc?.start.line as number)) return
 

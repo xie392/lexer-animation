@@ -98,7 +98,7 @@ onMounted(createCanvas)
   .animation {
     flex: 1;
     // min-height: 400px;
-    // max-height: calc(100vh - 300px);
+    // max-height: calc(100vh - 30px);
     overflow-y: auto;
     border-bottom: 1px solid var(--border-color, #e8e8e8);
 

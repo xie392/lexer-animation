@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer'
+import process from 'process'
 
 // 该文件自动包含在项目中
 declare module 'acorn-walk' {
@@ -68,5 +69,6 @@ declare module 'acorn-walk' {
 declare global {
   interface Window {
     Buffer: typeof Buffer
+    process: typeof process
   }
 }

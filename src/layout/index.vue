@@ -23,6 +23,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     padding: 0 30px;
     border-bottom: 1px solid var(--border-color, #e8e8e8);
+    overflow: hidden;
 
     .logo-image {
       max-width: 160px;

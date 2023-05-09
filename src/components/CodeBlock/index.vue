@@ -18,7 +18,7 @@ const { code: run_code } = storeToRefs(runStore)
 ace.config.set('basePath', '/ace-builds/src-noconflict/')
 
 // 主题
-const themeSelect = ref<string>('tomorrow')
+const themeSelect = ref<string>('twilight')
 // 语言
 const langSelect = ref<string>('javascript')
 // 字体大小
@@ -27,15 +27,7 @@ const fontSizeSelect = ref<number>(14)
 const theme = computed<string>(() => themeSelect.value)
 const lang = computed<string>(() => langSelect.value)
 
-const content = ref(`let c = 0
-
-if(c != 3) {
-  c = 10
-} else {
-  c = 11
-}
-
-`)
+const content = ref(``)
 const codeEditor = ref<Ace.Editor | null>(null)
 
 // 编辑器初始化
@@ -95,30 +87,30 @@ onUnmounted(() => {
   <div class="code-editor">
     <div class="flex code-editor-header">
       <div class="flex code-editor-header-left">
-        <!-- <div class="flex code-editor-header-item">
+        <div class="flex code-editor-header-item">
           <span clas="span-title">字体:</span>
           <a-select v-model:value="fontSizeSelect" @change="changeFontSize">
             <a-select-option v-for="(v, i) in fontSizeList" :key="i" :value="v">
               {{ v }}
             </a-select-option>
           </a-select>
-        </div> -->
-        <!-- <div class="flex code-editor-header-item">
+        </div>
+        <div class="flex code-editor-header-item">
           <span clas="span-title">语言:</span>
           <a-select v-model:value="langSelect" @change="changeTheme" disabled>
             <a-select-option v-for="(v, i) in langList" :key="i" :value="v.value">
               {{ v.label }}
             </a-select-option>
           </a-select>
-        </div> -->
-        <!-- <div class="flex code-editor-header-item">
+        </div>
+        <div class="flex code-editor-header-item">
           <span clas="span-title">主题:</span>
           <a-select v-model:value="themeSelect" @change="changeLang">
             <a-select-option v-for="(v, i) in themeList" :key="i" :value="v.value">
               {{ v.label }}
             </a-select-option>
           </a-select>
-        </div> -->
+        </div>
       </div>
       <div class="flex code-editor-header-right">
         <a-button type="primary" @click="run">
@@ -183,7 +175,7 @@ onUnmounted(() => {
 
     .editor {
       width: 100%;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 120px);
       overflow: hidden;
       box-sizing: border-box;
       border-top: 1px solid var(--border-color, #e8e8e8);

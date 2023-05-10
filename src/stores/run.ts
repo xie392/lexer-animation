@@ -61,7 +61,7 @@ export const useRunStore = defineStore(
           }
         })
 
-        draw.render(100)
+        draw.render(1000)
       } catch (err: any) {
         error.value = err.message
         console.error(err)

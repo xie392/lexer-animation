@@ -1,17 +1,20 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import { Buffer } from 'buffer'
-// @ts-ignore
-import process from 'process'
-
-window.Buffer = Buffer
-window.process = process
-
 import App from './App.vue'
 import router from './router'
-
 import '@/assets/styles/global.css'
+import { Buffer } from 'buffer'
+import process from 'process'
+
+if (typeof window.Buffer === 'undefined') {
+  window.Buffer = Buffer
+}
+
+if (typeof window.process === 'undefined') {
+  window.process = process
+}
+
 
 const app = createApp(App)
 

@@ -1,12 +1,12 @@
 import Konva from 'konva'
-import {
+import type {
   DrawOptionsInterface,
   DrawInterface,
   PointListInterface,
   QueueInterface,
   AnimationGroupInterface
 } from '$/types/index'
-import { GroupKitInterface } from '$/types/plugin'
+import type { GroupKitInterface } from '$/types/plugin'
 
 // 默认动画组
 const default_animation_group: Array<AnimationGroupInterface> = []

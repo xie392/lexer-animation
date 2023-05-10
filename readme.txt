@@ -1,3 +1,23 @@
+运行教程
+
+1、安装依赖 
+yarn
+或
+npm install
+
+2、运行
+yarn dev
+或
+npm run dev 
+
+3、打包
+yarn build
+或
+npm run build 
+
+
+目录介绍
+
 +---src
 |   App.vue                                 # 入口组件
 |   auto-imports.d.ts                       # ant-design 自动导入类型声明文件
@@ -73,4 +93,3 @@
     |   
     \---home                          
             index.vue
-            

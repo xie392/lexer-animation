@@ -16,7 +16,8 @@ export default () => {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
         '#': fileURLToPath(new URL('./types', import.meta.url)),
-        $: fileURLToPath(new URL('./src/canvas', import.meta.url))
+        '$': fileURLToPath(new URL('./src/canvas', import.meta.url)),
+        '~': fileURLToPath(new URL('./src/core', import.meta.url))
       }
     },
     define: {

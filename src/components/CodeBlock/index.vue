@@ -97,7 +97,7 @@ onUnmounted(() => {
         </div>
         <div class="flex code-editor-header-item">
           <span clas="span-title">语言:</span>
-          <a-select v-model:value="langSelect" @change="changeTheme" disabled>
+          <a-select v-model:value="langSelect" @change="changeTheme">
             <a-select-option v-for="(v, i) in langList" :key="i" :value="v.value">
               {{ v.label }}
             </a-select-option>

@@ -1,4 +1,4 @@
-import { DrawInterface, RenderInterface } from '$/types/index'
+import type { DrawInterface, RenderInterface } from '$/types/index'
 
 /**
  * 插件必须继承的抽象类

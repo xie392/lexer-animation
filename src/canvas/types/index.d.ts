@@ -136,6 +136,11 @@ export interface DrawInterface {
    */
   animation(shape: QueueInterface, options: any = {}): void
   /**
+   * 清空画布
+   * @returns {void}
+   */
+  clear(): void
+  /**
    * 销毁
    * @returns {void}
    */

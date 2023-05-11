@@ -1,7 +1,10 @@
-import { StackInterface, HeapInterface, QueueInterface } from '$/types/lexer'
+import type { StackInterface, HeapInterface, QueueInterface } from '$/types/lexer'
 import * as t from '@babel/types'
 import { useBasicExpression, findStack } from '@/hooks/useBasicExpression'
 import { useBinaryExpression } from '@/hooks/useExpressionResult'
+// import { useRunStore } from '@/stores/run'
+
+// const runStore = useRunStore()
 
 interface ListInterface {
   stack: StackInterface[]
@@ -57,7 +60,8 @@ function useTraverse(traverseList: ListInterface) {
           right: (v.right as t.Identifier).name ?? v.right.value,
           operator: '=',
           result: result
-        }
+        },
+        loc: v.loc
       })
     }
 
@@ -79,6 +83,8 @@ function useTraverse(traverseList: ListInterface) {
         loc: v.loc
       })
     }
+
+    // console.log("位置", v.loc);
   })
 
   console.log('queue_list -> ', queue)

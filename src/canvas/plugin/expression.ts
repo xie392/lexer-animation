@@ -1,4 +1,4 @@
-import { DrawInterface, ListInterface, ExpressionOptionsInterface } from '$/types'
+import type { DrawInterface, ListInterface, ExpressionOptionsInterface } from '$/types'
 import Konva from 'konva'
 import { Plugin } from '$/index'
 

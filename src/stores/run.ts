@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import Draw, { pluginList, Lexer } from '$/index'
-import useTraverse, { QueueListInterface } from '@/helper/useTraverse'
+import useTraverse, { type QueueListInterface } from '@/helper/useTraverse'
+import type { DrawInterface } from '$/types'
 
 // interface AstNode {
 //   type: string
@@ -19,17 +20,17 @@ export const useRunStore = defineStore(
     const ast = ref<any>({})
     const error = ref<string>('')
     const queue = ref<QueueListInterface[]>([])
+    const draw = ref<DrawInterface | null>(null)
+    const time = ref<number>(400)
+    const hight_line = ref<number>(0)
 
     // 监听是否运行
     // watch(is_run, () => {})
 
     const run = () => {
       try {
-
+        const dr = new Draw({ id: 'canvas' }, pluginList)
         error.value = ''
-
-        const draw = new Draw({ id: 'canvas' }, pluginList)
-
         const lexer = new Lexer(code.value)
         tokens.value = lexer.tokenizer()
         ast.value = lexer.parser()
@@ -39,19 +40,25 @@ export const useRunStore = defineStore(
         let end = 0
         queue.value.map((v) => {
           const line = v?.loc?.start?.line ?? 0
-
           if (end !== 0 && line > end) {
-            draw.blockEnd()
+            dr.blockEnd()
             end = 0
           }
 
-          draw.insert(v.name, v.params)
+          // ;(function (line) {
+          //   setTimeout(() => {
+          //     console.log('line', line)
+          //     hight_line.value = line
+          //   }, 1000)
+          // })(line)
+
+          dr.insert(v.name, v.params)
 
           // 块元素
           if (v.name === 'IfStatement') {
-            draw.blockStart()
-            draw.blockAddText(`if(${v.params.left} ${v.params.operator} ${v.params.right})`)
-            draw.insert('Expression', {
+            dr.blockStart()
+            dr.blockAddText(`if(${v.params.left} ${v.params.operator} ${v.params.right})`)
+            dr.insert('Expression', {
               left: v.params.left,
               right: v.params.right,
               operator: v.params.operator,
@@ -61,14 +68,21 @@ export const useRunStore = defineStore(
           }
         })
 
-        draw.render(1000)
+        dr.render(time.value)
+
+        draw.value = dr
       } catch (err: any) {
         error.value = err.message
         console.error(err)
       }
     }
 
-    return { is_run, code, tokens, ast, error, run, queue }
+    const clear = () => {
+      error.value = ''
+      draw.value && draw.value.clear()
+    }
+
+    return { is_run, code, tokens, ast, error, run, queue, clear, time, hight_line }
   },
   {
     // persist: {

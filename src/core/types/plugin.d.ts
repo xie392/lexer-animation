@@ -1,36 +1,38 @@
 import type { DrawInterface } from '~/types/draw'
 
+import type { DrawInterface } from '~/types/draw'
+
 /**
  * @description: 插件类型
  * @type {pluginInterface}
  */
-export abstract class PluginInterface {
+export interface PluginInterface {
   /**
    * @description: 绘制类
    * @param {DrawInterface}
    */
   draw: DrawInterface
-  /**
-   * @description: 参数
-   * @param {any}
-   */
-  options: any
+  // /**
+  //  * @description: 参数
+  //  * @param {any}
+  //  */
+  // options: any
   /**
    * @description: 插件名字
    * @returns {string}
    */
-  static readonly pluginName: string
+  // readonly pluginName: string
 
-  constructor(draw: DrawInterface, options: any)
+  constructor(draw: DrawInterface)
 
-  abstract render(): RenderInterface[]
+  render(): RenderInterface[]
 }
 
 /**
  * @description: 插件列表类型
  * @type {pluginInterface}
  */
-export type PluginListInterface = any
+export type PluginListInterface = PluginInterface
 
 /**
  * @description: render 函数返回值类型

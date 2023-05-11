@@ -67,7 +67,7 @@ class Draw implements DrawInterface {
       // 遍历插件 找到每一个插件
       this.#plugin.forEach((item) => {
         // 插件名必须要找得到
-        if (item.name === name) {
+        if (item.pluginName === name) {
           // 实例化插件
           const plugin = new item(this, params)
           // 运行插件中的 render 方法
@@ -95,9 +95,10 @@ class Draw implements DrawInterface {
 
           // 这里主要是为了计算画布的高度 当元素要超出画布的时候，就要增加画布的高度 而且滚动到最新的位置
           if (shape.value.x() + shape.value.height() > this.stage.height()) {
-            this.stage.height(shape.value.x() + shape.value.height() + 20)
+            this.stage.height(shape.value.x() + shape.value.height() + 100)
             this.el.style.overflowY = 'scroll'
             this.el.style.overflowX = 'hidden'
+            this.el.style.height = `${this.stage.height()}px`
             // TODO: 滚动到最新的位置
             // this.el.scrollTop += 10
           }

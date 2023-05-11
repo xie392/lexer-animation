@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { VAceEditor } from 'vue3-ace-editor'
 import type { Ace } from 'ace-builds'
-import { CaretRightOutlined, PauseOutlined } from '@ant-design/icons-vue'
+import {
+  CaretRightOutlined,
+  PauseOutlined,
+  DeleteOutlined,
+  EditOutlined
+} from '@ant-design/icons-vue'
 import * as ace from 'ace-builds'
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import './index'
 import { themeList, langList, fontSizeList } from './index'
@@ -12,7 +17,7 @@ import { useRunStore } from '@/stores/run'
 
 const runStore = useRunStore()
 
-const { code: run_code } = storeToRefs(runStore)
+const { code: run_code, hight_line } = storeToRefs(runStore)
 
 // 配置路径
 ace.config.set('basePath', '/ace-builds/src-noconflict/')
@@ -27,7 +32,16 @@ const fontSizeSelect = ref<number>(14)
 const theme = computed<string>(() => themeSelect.value)
 const lang = computed<string>(() => langSelect.value)
 
-const content = ref(``)
+const defaultCode = `let a = 1, b = 2 , c = 0;
+
+if(a > b) {
+  c = a
+} else {
+  c = b
+}
+`
+
+const content = ref<string>(defaultCode)
 const codeEditor = ref<Ace.Editor | null>(null)
 
 // 编辑器初始化
@@ -38,7 +52,7 @@ const editorInit = (editor: Ace.Editor) => {
     enableLiveAutocompletion: true,
     tabSize: 4,
     // 高亮当前行
-    highlightActiveLine: false,
+    highlightActiveLine: true,
     // 显示行号
     showLineNumbers: true,
     // 高亮边线
@@ -78,6 +92,28 @@ const run = () => {
   runStore.run()
 }
 
+// 清空代码：
+const clear = () => {
+  codeEditor.value?.setValue('')
+  runStore.clear()
+}
+
+// 添加示例代码
+const addDefault = () => {
+  codeEditor.value?.setValue(defaultCode)
+}
+
+watch(hight_line, () => {
+  // console.log('line', hight_line.value)
+  // codeEditor.value?.gotoLine(line.value, 0, true)
+  codeEditor.value?.selection.moveCursorTo(hight_line.value - 1, 0, true)
+  // const css = `.ace_gutter-cell.ace_highlight {
+  //     background-color: blue;
+  //   }`
+  // codeEditor.value?.setHighlightGutterLine(true)
+  // codeEditor.value?.renderer.setStyle(css)
+})
+
 onUnmounted(() => {
   codeEditor.value && codeEditor.value.destroy()
 })
@@ -113,13 +149,24 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="flex code-editor-header-right">
+        <a-button @click="addDefault">
+          <template #icon>
+            <edit-outlined />
+          </template>
+          示例代码
+        </a-button>
+        <a-button @click="clear">
+          <template #icon>
+            <delete-outlined />
+          </template>
+          清空
+        </a-button>
         <a-button type="primary" @click="run">
           <template #icon>
             <caret-right-outlined />
             <!-- <pause-outlined v-else/> -->
           </template>
           运行
-          <!-- {{ runStore.isRun ? '暂停' : '运行' }} -->
         </a-button>
         <!-- <a-button type="danger">
           <template #icon>
@@ -188,5 +235,8 @@ onUnmounted(() => {
 <style>
 .ace_gutter {
   background: rgba(0, 0, 0, 0) !important;
+}
+.ace_gutter-cell.ace_highlight {
+  background-color: blue;
 }
 </style>

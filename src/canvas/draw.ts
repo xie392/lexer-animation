@@ -32,6 +32,9 @@ class Draw implements DrawInterface {
 
   pluginList: GroupKitInterface[] = []
 
+  is_clear: boolean = false
+  line: number = 0
+
   constructor(options: DrawOptionsInterface, pluginList: GroupKitInterface[] = []) {
     this.id = options.id
     if (!this.id) throw new Error('id 找不到')
@@ -170,13 +173,16 @@ class Draw implements DrawInterface {
   }
 
   render(timer: number = 1000) {
+    this.is_clear = false
     // 遍历队列
     this.queue.forEach((item) => {
       // 遍历队列中的每一项
       item.forEach((shape: QueueInterface) => {
         const time = this.time
         // 一个一个渲染
-        setTimeout(() => {
+        const _timer = setTimeout(() => {
+          if (this.is_clear) return clearTimeout(_timer)
+
           this.layer.add(shape.value)
           this.layer.draw()
 
@@ -215,6 +221,12 @@ class Draw implements DrawInterface {
     animate.play()
 
     return animate
+  }
+
+  clear() {
+    this.is_clear = true
+    this.layer.destroyChildren()
+    this.layer.draw()
   }
 
   destroy() {
